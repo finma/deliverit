@@ -44,6 +44,7 @@ class ButtonCustom extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
+                  letterSpacing: type == ButtonType.primary ? 1 : 0,
                   color:
                       type == ButtonType.primary ? Colors.white : Colors.black,
                   fontWeight: type == ButtonType.primary
