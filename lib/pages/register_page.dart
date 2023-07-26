@@ -107,7 +107,7 @@ class RegisterPage extends StatelessWidget {
                         };
 
                         print(dataUser);
-                        // context.goNamed(Routes.home);
+                        context.goNamed(Routes.otp);
                       },
                     ),
                   ],

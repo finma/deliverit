@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '/pages/home_page.dart';
 import '/pages/login_page.dart';
+import '/pages/otp_pages.dart';
 import '/pages/register_page.dart';
 
 part 'route_names.dart';
@@ -27,6 +28,11 @@ final router = GoRouter(
       path: '/register',
       name: Routes.register,
       builder: (context, state) => RegisterPage(),
+    ),
+    GoRoute(
+      path: '/otp',
+      name: Routes.otp,
+      builder: (context, state) => const OtpPage(),
     ),
   ],
 );
