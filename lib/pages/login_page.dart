@@ -138,7 +138,7 @@ class LoginPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // TODO: Buat akun
+                context.goNamed(Routes.register);
               },
               child: const Text(
                 'Buat akun',
