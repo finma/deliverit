@@ -125,7 +125,7 @@ class LoginPage extends StatelessWidget {
         }),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 40),
+        padding: const EdgeInsets.only(bottom: 32),
         decoration: const BoxDecoration(color: Colors.transparent),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
