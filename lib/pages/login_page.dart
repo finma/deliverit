@@ -1,3 +1,4 @@
+import 'package:deliverit/config/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -103,6 +104,7 @@ class LoginPage extends StatelessWidget {
                                   builder: (context, state) {
                                     return Switch.adaptive(
                                       value: state,
+                                      activeColor: AppColor.primary,
                                       onChanged: (value) {
                                         _switchCubit.toggleSwitch();
                                       },
