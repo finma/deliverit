@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +16,8 @@ class RegisterPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -68,53 +71,98 @@ class RegisterPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
 
-                        //* NAME
-                        CustomTextFormField(
-                          controller: nameController,
-                          hintText: 'nama lengkap',
-                          iconAsset: AppAsset.iconProfile,
-                        ),
-                        const SizedBox(height: 20),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              //* NAME
+                              CustomTextFormField(
+                                controller: nameController,
+                                hintText: 'nama lengkap',
+                                iconAsset: AppAsset.iconProfile,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Nama lengkap tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
 
-                        //* EMAIL ADDRESS
-                        CustomTextFormField(
-                          controller: emailController,
-                          hintText: 'abc@email.com',
-                          iconAsset: AppAsset.iconMail,
-                        ),
-                        const SizedBox(height: 20),
+                              //* EMAIL ADDRESS
+                              CustomTextFormField(
+                                controller: emailController,
+                                hintText: 'abc@email.com',
+                                iconAsset: AppAsset.iconMail,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Email tidak boleh kosong';
+                                  }
 
-                        //* PASSWORD
-                        CustomTextFormField(
-                          controller: passwordController,
-                          hintText: 'kata sandi',
-                          iconAsset: AppAsset.iconLock,
-                          isPassword: true,
-                        ),
-                        const SizedBox(height: 20),
+                                  if (!EmailValidator.validate(value)) {
+                                    return 'Masukkan email yang valid';
+                                  }
 
-                        //* CONFIRM PASSWORD
-                        CustomTextFormField(
-                          controller: confirmPasswordController,
-                          hintText: 'konfirmasi kata sandi',
-                          iconAsset: AppAsset.iconLock,
-                          isPassword: true,
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+
+                              //* PASSWORD
+                              CustomTextFormField(
+                                controller: passwordController,
+                                hintText: 'kata sandi',
+                                iconAsset: AppAsset.iconLock,
+                                isPassword: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Kata sandi tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+
+                              //* CONFIRM PASSWORD
+                              CustomTextFormField(
+                                controller: confirmPasswordController,
+                                hintText: 'konfirmasi kata sandi',
+                                iconAsset: AppAsset.iconLock,
+                                isPassword: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Konfirmasi kata sandi tidak boleh kosong';
+                                  }
+
+                                  if (value != passwordController.text) {
+                                    return 'Kata sandi tidak cocok';
+                                  }
+
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 52),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 52),
 
                         ButtonCustom(
                           label: 'SIMPAN',
                           // icon: AppAsset.logoGoogle,
                           onTap: () {
-                            final Map<String, dynamic> dataUser = {
-                              "name": nameController.text,
-                              "email": emailController.text,
-                              "password": passwordController.text,
-                              "confirmPassword": confirmPasswordController.text,
-                            };
+                            debugPrint('${_formKey.currentState}');
+                            if (_formKey.currentState!.validate()) {
+                              final Map<String, dynamic> dataUser = {
+                                "name": nameController.text,
+                                "email": emailController.text,
+                                "password": passwordController.text,
+                                "confirmPassword":
+                                    confirmPasswordController.text,
+                              };
 
-                            debugPrint('$dataUser');
-                            context.goNamed(Routes.otp);
+                              debugPrint('$dataUser');
+                              context.goNamed(Routes.otp);
+                            }
                           },
                         ),
 
