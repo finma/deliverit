@@ -7,14 +7,14 @@ import '/cubit/countdown_cubit.dart';
 import '/widgets/background_mesh_widget.dart';
 import '/widgets/custom_button_widget.dart';
 
-class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+class VerificationPage extends StatefulWidget {
+  const VerificationPage({super.key});
 
   @override
-  State<OtpPage> createState() => _OtpPageState();
+  State<VerificationPage> createState() => _VerificationPageState();
 }
 
-class _OtpPageState extends State<OtpPage> {
+class _VerificationPageState extends State<VerificationPage> {
   final pinController = TextEditingController();
   final focusNode = FocusNode();
 

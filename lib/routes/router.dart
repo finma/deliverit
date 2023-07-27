@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 
 import '/pages/home_page.dart';
 import '/pages/login_page.dart';
-import '/pages/otp_pages.dart';
 import '/pages/register_page.dart';
+import '/pages/verfication_pages.dart';
 
 part 'route_names.dart';
 
@@ -32,7 +32,7 @@ final router = GoRouter(
     GoRoute(
       path: '/otp',
       name: Routes.otp,
-      builder: (context, state) => const OtpPage(),
+      builder: (context, state) => const VerificationPage(),
     ),
   ],
 );
