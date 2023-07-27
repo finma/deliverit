@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pinput/pinput.dart';
 
 import '/config/app_color.dart';
 import '/cubit/countdown_cubit.dart';
 import '/widgets/background_mesh_widget.dart';
 import '/widgets/custom_button_widget.dart';
+import '/widgets/custon_pinput_widget.dart';
 
 class VerificationPage extends StatefulWidget {
   const VerificationPage({super.key});
@@ -37,26 +37,6 @@ class _VerificationPageState extends State<VerificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    const focusedBorderColor = AppColor.primary;
-    const fillColor = Colors.white;
-    final borderColor = Colors.grey.shade300;
-
-    final defaultPinTheme = PinTheme(
-      width: 55,
-      height: 55,
-      textStyle: const TextStyle(
-        fontSize: 24,
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor),
-      ),
-    );
-
-    debugPrint('BUILD');
-
     return Scaffold(
       body: BackgroundMesh(
         child: LayoutBuilder(builder: (context, constraint) {
@@ -91,51 +71,10 @@ class _VerificationPageState extends State<VerificationPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    Pinput(
-                      controller: pinController,
-                      focusNode: focusNode,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      // androidSmsAutofillMethod:
-                      //     AndroidSmsAutofillMethod.smsUserConsentApi,
-                      // listenForMultipleSmsOnAndroid: true,
-                      defaultPinTheme: defaultPinTheme,
-                      // validator: (value) {
-                      //   return value == '2222' ? null : 'Pin is incorrect';
-                      // },
-                      hapticFeedbackType: HapticFeedbackType.lightImpact,
-                      // onCompleted: (pin) {
-                      //   debugPrint('onCompleted: $pin');
-                      // },
-                      // onChanged: (value) {
-                      //   debugPrint('onChanged: $value');
-                      // },
-                      cursor: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 9),
-                            width: 22,
-                            height: 1,
-                            color: focusedBorderColor,
-                          ),
-                        ],
-                      ),
-                      focusedPinTheme: defaultPinTheme.copyWith(
-                        decoration: defaultPinTheme.decoration!.copyWith(
-                          border: Border.all(color: focusedBorderColor),
-                        ),
-                      ),
-                      submittedPinTheme: defaultPinTheme.copyWith(
-                        decoration: defaultPinTheme.decoration!.copyWith(
-                          color: fillColor,
-                          border: Border.all(color: focusedBorderColor),
-                        ),
-                      ),
-                      errorPinTheme: defaultPinTheme.copyBorderWith(
-                        border: Border.all(color: Colors.redAccent),
-                      ),
-                    ),
+
+                    CustomPinput(controller: pinController),
                     const SizedBox(height: 52),
+
                     ButtonCustom(
                       label: 'LANJUTKAN',
                       // icon: AppAsset.logoGoogle,
