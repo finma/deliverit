@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 class BackgroundMesh extends StatelessWidget {
   const BackgroundMesh({
     Key? key,
-    required this.child,
   }) : super(key: key);
-
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +49,24 @@ class BackgroundMesh extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          left: -100,
+          top: 700,
+          child: Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              color: AppColor.gradient,
+              borderRadius: BorderRadius.circular(250),
+            ),
+          ),
+        ),
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
             child: const SizedBox(),
           ),
         ),
-        SafeArea(
-          child: child,
-        )
       ],
     );
   }
