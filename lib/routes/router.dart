@@ -5,6 +5,8 @@ import '/pages/login_page.dart';
 import '/pages/register_page.dart';
 import '/pages/verfication_pages.dart';
 
+export 'package:go_router/go_router.dart';
+
 part 'route_names.dart';
 
 final router = GoRouter(
