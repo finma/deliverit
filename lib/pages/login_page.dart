@@ -18,6 +18,8 @@ class LoginPage extends StatelessWidget {
   // state cubit
   final SwitchCubit _switchCubit = SwitchCubit(false);
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,21 +57,42 @@ class LoginPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 100),
 
-                        //* EMAIL ADDRESS
-                        CustomTextFormField(
-                          controller: emailController,
-                          hintText: 'abc@email.com',
-                          iconAsset: AppAsset.iconMail,
-                        ),
-                        const SizedBox(height: 20),
+                        //* FORM LOGIN
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              //* EMAIL ADDRESS
+                              CustomTextFormField(
+                                controller: emailController,
+                                hintText: 'abc@email.com',
+                                iconAsset: AppAsset.iconMail,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Email tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
 
-                        //* PASSWORD
-                        CustomTextFormField(
-                          controller: passwordController,
-                          hintText: 'kata sandi',
-                          iconAsset: AppAsset.iconLock,
-                          isPassword: true,
+                              //* PASSWORD
+                              CustomTextFormField(
+                                controller: passwordController,
+                                hintText: 'kata sandi',
+                                iconAsset: AppAsset.iconLock,
+                                isPassword: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Kata sandi tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
                         ),
+
                         const SizedBox(height: 20),
                         Row(
                           children: [
@@ -105,13 +128,15 @@ class LoginPage extends StatelessWidget {
                           // icon: AppAsset.logoGoogle,
                           onTap: () {
                             // TODO: login method
-                            final Map<String, dynamic> dataUser = {
-                              "email": emailController.text,
-                              "password": passwordController.text,
-                            };
-
-                            debugPrint('$dataUser');
-                            context.goNamed(Routes.home);
+                            if (_formKey.currentState!.validate()) {
+                              // TODO: login method
+                              final Map<String, dynamic> dataUser = {
+                                "email": emailController.text,
+                                "password": passwordController.text,
+                              };
+                              debugPrint('$dataUser');
+                              context.goNamed(Routes.home);
+                            }
                           },
                         ),
                         const SizedBox(height: 20),
