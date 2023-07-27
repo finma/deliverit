@@ -72,7 +72,10 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                     const SizedBox(height: 32),
 
-                    CustomPinput(controller: pinController),
+                    CustomPinput(
+                      controller: pinController,
+                      focusNode: focusNode,
+                    ),
                     const SizedBox(height: 52),
 
                     ButtonCustom(

@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 class BackgroundMesh extends StatelessWidget {
   const BackgroundMesh({
     Key? key,
+    this.child,
   }) : super(key: key);
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +70,7 @@ class BackgroundMesh extends StatelessWidget {
             child: const SizedBox(),
           ),
         ),
+        SafeArea(child: child ?? Container()),
       ],
     );
   }

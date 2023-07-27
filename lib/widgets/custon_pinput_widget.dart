@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:pinput/pinput.dart';
 
 import '../config/app_color.dart';
@@ -9,11 +7,12 @@ class CustomPinput extends StatelessWidget {
   CustomPinput({
     Key? key,
     required this.controller,
+    required this.focusNode,
   }) : super(key: key);
 
   TextEditingController controller;
 
-  final focusNode = FocusNode();
+  FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
