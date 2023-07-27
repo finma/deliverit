@@ -42,9 +42,14 @@ class CustomPinput extends StatelessWidget {
       //     AndroidSmsAutofillMethod.smsUserConsentApi,
       // listenForMultipleSmsOnAndroid: true,
       defaultPinTheme: defaultPinTheme,
-      // validator: (value) {
-      //   return value == '2222' ? null : 'Pin is incorrect';
-      // },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Masukan kode verifikasi';
+        }
+
+        return null;
+        // return value == '2222' ? null : 'Pin is incorrect';
+      },
       hapticFeedbackType: HapticFeedbackType.lightImpact,
       // onCompleted: (pin) {
       //   debugPrint('onCompleted: $pin');

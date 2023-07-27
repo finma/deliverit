@@ -17,13 +17,14 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final pinController = TextEditingController();
   final focusNode = FocusNode();
+  final _formKey = GlobalKey<FormState>();
 
   late CountdownCubit _countdownCubit;
   final int countdownDuration = 60;
 
   @override
   void initState() {
-    debugPrint('INIT STATE');
+    // debugPrint('INIT STATE');
     super.initState();
     _countdownCubit = CountdownCubit(countdownDuration);
     _countdownCubit.startCountdown();
@@ -72,9 +73,13 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                     const SizedBox(height: 32),
 
-                    CustomPinput(
-                      controller: pinController,
-                      focusNode: focusNode,
+                    //* FIELD OTP
+                    Form(
+                      key: _formKey,
+                      child: CustomPinput(
+                        controller: pinController,
+                        focusNode: focusNode,
+                      ),
                     ),
                     const SizedBox(height: 52),
 
@@ -82,7 +87,9 @@ class _VerificationPageState extends State<VerificationPage> {
                       label: 'LANJUTKAN',
                       // icon: AppAsset.logoGoogle,
                       onTap: () {
-                        debugPrint('value: ${pinController.text}');
+                        if (_formKey.currentState!.validate()) {
+                          debugPrint('value: ${pinController.text}');
+                        }
                       },
                     ),
                     // const SizedBox(height: 14),
