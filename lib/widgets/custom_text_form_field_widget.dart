@@ -19,6 +19,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.iconAsset,
     this.isDense = true,
     this.isPassword = false,
+    this.validator,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -26,6 +27,7 @@ class CustomTextFormField extends StatelessWidget {
   final String iconAsset;
   final bool isDense;
   final bool isPassword;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class CustomTextFormField extends StatelessWidget {
           return TextFormField(
             controller: controller,
             obscureText: isPassword ? isPasswordHidden : false,
+            validator: validator,
             decoration: InputDecoration(
               isDense: isDense,
               filled: true,
