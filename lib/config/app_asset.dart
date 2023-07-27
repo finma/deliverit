@@ -1,4 +1,6 @@
 class AppAsset {
+  static const fotoBanner = 'assets/images/foto_banner.png';
+  static const fotoBox = 'assets/images/foto_box.png';
   static const iconBag = 'assets/images/icon_bag.png';
   static const iconCall = 'assets/images/icon_call.png';
   static const iconClock = 'assets/images/icon_clock.png';
@@ -11,6 +13,7 @@ class AppAsset {
   static const iconLogout = 'assets/images/icon_logout.png';
   static const iconMail = 'assets/images/icon_mail.png';
   static const iconMessage = 'assets/images/icon_message.png';
+  static const iconNotification = 'assets/images/icon_notification.png';
   static const iconPeople = 'assets/images/icon_people.png';
   static const iconPoint = 'assets/images/icon_point.png';
   static const iconProfile = 'assets/images/icon_profile.png';
@@ -22,4 +25,5 @@ class AppAsset {
   static const logoDeliverit = 'assets/images/logo_deliverit.png';
   static const logoDeliveritText = 'assets/images/logo_deliverit_text.png';
   static const logoGoogle = 'assets/images/logo_google.png';
+  static const profile = 'assets/images/profile.jpg';
 }
