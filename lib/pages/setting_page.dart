@@ -1,5 +1,7 @@
-import 'package:deliverit/routes/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '/routes/router.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -55,7 +57,7 @@ class ItemSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // debugPrint('$title');
+        context.goNamed(route);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

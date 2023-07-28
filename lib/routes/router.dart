@@ -1,3 +1,6 @@
+import 'package:deliverit/pages/profile/setting/change_password_page.dart';
+import 'package:deliverit/pages/profile/setting/my_address_page.dart';
+import 'package:deliverit/pages/profile/setting/payment_method_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '/pages/account_page.dart';
@@ -50,6 +53,23 @@ final router = GoRouter(
               path: 'setting',
               name: Routes.setting,
               builder: (context, state) => const SettingPage(),
+              routes: [
+                GoRoute(
+                  path: 'my-address',
+                  name: Routes.myAddress,
+                  builder: (context, state) => const MyAddressPage(),
+                ),
+                GoRoute(
+                  path: 'payment-method',
+                  name: Routes.paymentMethod,
+                  builder: (context, state) => const PaymentMethodPage(),
+                ),
+                GoRoute(
+                  path: 'change-password',
+                  name: Routes.changePassword,
+                  builder: (context, state) => const ChangePasswordPage(),
+                ),
+              ],
             ),
             GoRoute(
               path: 'help',
