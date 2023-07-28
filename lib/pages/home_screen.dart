@@ -1,4 +1,6 @@
+import 'package:deliverit/routes/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
@@ -122,21 +124,26 @@ class HeaderContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.white,
-                width: 2,
+          GestureDetector(
+            onTap: () {
+              context.pushNamed(Routes.profile);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(36),
               ),
-              borderRadius: BorderRadius.circular(36),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(36),
-              child: Image.asset(
-                AppAsset.profile,
-                width: 36,
-                height: 36,
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(36),
+                child: Image.asset(
+                  AppAsset.profile,
+                  width: 36,
+                  height: 36,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
