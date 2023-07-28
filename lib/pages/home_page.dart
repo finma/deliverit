@@ -1,244 +1,156 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '/cubit/navigation_cubit.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
-import '/widgets/cutom_dropdown_widget.dart';
+import '/pages/home_screen.dart';
+import '/pages/mitra_page.dart';
+import '/pages/order_page.dart';
+import '/pages/telphone_page.dart';
+import '/pages/wallet_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  List<String> dummyData = [
-    'Perum CGM Blok A',
-    'Desa Salagedang, Kecamatan Sukahaji, Kabupaten Majalengka',
-    'Perum CGM Blok C',
-    'Perum CGM Blok D',
+  final List<Widget> screens = [
+    const HomeScreen(),
+    const OrderPage(),
+    const WalletPage(),
+    const MitraPage(),
+    const TelphonePage(),
   ];
+
+  final PageStorageBucket bucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 350,
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 180,
-                          decoration: const BoxDecoration(
-                            color: AppColor.primary,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(32),
-                              bottomRight: Radius.circular(32),
-                            ),
-                          ),
-                          child: header(),
-                        ),
-                      ],
-                    ),
-
-                    // * BANNER
-                    Positioned(
-                      top: 152,
-                      left: (MediaQuery.of(context).size.width - 316) / 2,
-                      child: Image.asset(
-                        AppAsset.fotoBanner,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Mau pesan DeliverIt\nbuat apa?',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        ImageIcon(
-                          AssetImage(AppAsset.iconExclamationMark),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    itemDeliverit(
-                      title: 'Angkut Barang',
-                      subTitle:
-                          'Ngirim barang besar atau\njumlah banyak jadi mudah.\n(Contoh: motor)',
-                      icon: AppAsset.fotoBox,
-                      onTap: () {
-                        debugPrint('Angkut barang');
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    itemDeliverit(
-                      title: 'Pindahan',
-                      subTitle:
-                          'Mau angkut barang ke tempat\nbaru? Sama DeliverIt bisa\nsekali jalan. (Contoh: pindahan\nrumah)',
-                      icon: AppAsset.fotoBox,
-                      onTap: () {
-                        debugPrint('Pindahan');
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
+      body: PageStorage(
+        bucket: bucket,
+        child: BlocBuilder<NavigationCubit, int>(
+          builder: (context, indexPage) {
+            return screens[indexPage];
+          },
         ),
       ),
+      floatingActionButton: const FloatingActionButtonWidget(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: const BottomAppBarWidget(),
     );
   }
+}
 
-  GestureDetector itemDeliverit({
-    required String title,
-    required String subTitle,
-    required String icon,
-    void Function()? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
+class FloatingActionButtonWidget extends StatelessWidget {
+  const FloatingActionButtonWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NavigationCubit, int>(
+      buildWhen: (previous, current) => false,
+      builder: (context, indexPage) {
+        return FloatingActionButton(
+          backgroundColor: AppColor.primary,
+          child: const ImageIcon(
+            AssetImage(AppAsset.iconHome),
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context.read<NavigationCubit>().setTabIndex(0);
+          },
+        );
+      },
+    );
+  }
+}
+
+class BottomAppBarWidget extends StatelessWidget {
+  const BottomAppBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 10,
       child: Container(
-        width: double.infinity,
-        height: 128,
-        decoration: BoxDecoration(
-          color: AppColor.secondary,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        height: 60,
         child: Row(
-          children: [
-            Row(
-              children: [
-                Image.asset(icon),
-                const SizedBox(width: 16),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      subTitle,
-                      style: const TextStyle(fontSize: 12),
-                      softWrap: true,
-                    ),
-                  ],
-                ),
-              ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const <Widget>[
+            // * LEFT TAB BAR ICONS
+            NavigationButton(
+              iconAsset: AppAsset.iconBag,
+              title: 'Order',
+              tabIndex: 1,
             ),
-            const Spacer(),
-            const Icon(Icons.arrow_forward_ios)
+            SizedBox(width: 16),
+            NavigationButton(
+              iconAsset: AppAsset.iconWallet,
+              title: 'Wallet',
+              tabIndex: 2,
+            ),
+            // * RIGHT TAB BAR ICONS
+            Spacer(),
+            NavigationButton(
+              iconAsset: AppAsset.iconPeople,
+              title: 'Mitra',
+              tabIndex: 3,
+            ),
+            SizedBox(width: 16),
+            NavigationButton(
+              iconAsset: AppAsset.iconCall,
+              title: 'Telepon',
+              tabIndex: 4,
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  Stack header() {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 50, 24, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+class NavigationButton extends StatelessWidget {
+  final String iconAsset;
+  final String title;
+  final int tabIndex;
+
+  const NavigationButton({
+    super.key,
+    required this.iconAsset,
+    required this.title,
+    required this.tabIndex,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      minWidth: 40,
+      onPressed: () {
+        context.read<NavigationCubit>().setTabIndex(tabIndex);
+      },
+      child: BlocBuilder<NavigationCubit, int>(
+        builder: (context, indexPage) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(36),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(36),
-                  child: Image.asset(
-                    AppAsset.profile,
-                    width: 36,
-                    height: 36,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+              ImageIcon(
+                AssetImage(iconAsset),
+                color: indexPage == tabIndex ? AppColor.primary : Colors.grey,
               ),
-
-              //* CUSTOM DROPDOWN
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: CustomDropdown(
-                  items: dummyData,
-                ),
-              ),
-              Material(
-                color: Colors.white.withAlpha(50),
-                borderRadius: BorderRadius.circular(36),
-                child: InkWell(
-                  onTap: () {
-                    // TODO: create method open notification
-                    debugPrint('open notif');
-                  },
-                  borderRadius: BorderRadius.circular(36),
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(36),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        const ImageIcon(
-                          AssetImage(AppAsset.iconNotification),
-                          color: Colors.white,
-                          size: 72,
-                        ),
-
-                        //* NOTIFICATION BADGE
-                        Positioned(
-                          top: 5,
-                          right: 6,
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: AppColor.blue,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColor.primary,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: TextStyle(
+                  color: indexPage == tabIndex ? AppColor.primary : Colors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
                 ),
               )
             ],
-          ),
-        )
-      ],
+          );
+        },
+      ),
     );
   }
 }
