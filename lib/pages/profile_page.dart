@@ -155,10 +155,10 @@ class MenuItem extends StatelessWidget {
       onTap: () {
         if (routeName == Routes.login) {
           // TODO: create method logout
-          context.goNamed(Routes.login);
+          context.goNamed(routeName);
         } else {
           // TODO: will implement later
-          // context.goNamed(menu['route']);
+          context.goNamed(routeName);
         }
       },
       child: Container(
