@@ -8,6 +8,7 @@ class AppAsset {
   static const iconExclamationMark = 'assets/images/icon_exclamation_mark.png';
   static const iconFlag = 'assets/images/icon_flag.png';
   static const iconGps = 'assets/images/icon_gps.png';
+  static const iconHome = 'assets/images/icon_home.png';
   static const iconLocation = 'assets/images/icon_location.png';
   static const iconLock = 'assets/images/icon_lock.png';
   static const iconLogout = 'assets/images/icon_logout.png';
