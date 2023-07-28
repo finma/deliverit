@@ -1,9 +1,9 @@
-import 'package:deliverit/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/routes/router.dart';
 import '/widgets/cutom_dropdown_widget.dart';
 
 class HomeScreen extends StatelessWidget {

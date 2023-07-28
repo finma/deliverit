@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 
-import '/pages/home_page.dart';
+import '/pages/home/home_page.dart';
 import '/pages/login_page.dart';
 import '/pages/register_page.dart';
 import '/pages/reset_password_page.dart';
 import '/pages/verfication_pages.dart';
 
-import '/pages/profile_page.dart';
+import '/pages/profile/profile_page.dart';
 import '/pages/profile/account/account_page.dart';
 import '/pages/profile/help/help_page.dart';
 import '/pages/profile/history/history_page.dart';

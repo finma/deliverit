@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/cubit/navigation_cubit.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
-import '/pages/home_screen.dart';
-import '/pages/mitra_page.dart';
-import '/pages/order_page.dart';
-import '/pages/telphone_page.dart';
-import '/pages/wallet_page.dart';
+import '/pages/home/home_screen.dart';
+import '/pages/home/mitra_page.dart';
+import '/pages/home/order_page.dart';
+import '/pages/home/telphone_page.dart';
+import '/pages/home/wallet_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
