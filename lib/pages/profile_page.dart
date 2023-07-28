@@ -6,69 +6,48 @@ import '/config/app_color.dart';
 import '/routes/router.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+
+  final List<Map<String, dynamic>> menu = [
+    {
+      'icon': AppAsset.iconProfile,
+      'label': 'Akun Saya',
+      'route': Routes.account,
+    },
+    {
+      'icon': AppAsset.iconMessage,
+      'label': 'Pesan',
+      'route': Routes.message,
+    },
+    {
+      'icon': AppAsset.iconLove,
+      'label': 'Mitra Favorit',
+      'route': Routes.mitraFavourite,
+    },
+    {
+      'icon': AppAsset.iconClock,
+      'label': 'Riwayat Pesanan',
+      'route': Routes.history,
+    },
+    {
+      'icon': AppAsset.iconSetting,
+      'label': 'Pengaturan',
+      'route': Routes.setting,
+    },
+    {
+      'icon': AppAsset.iconQuestionMark,
+      'label': 'Bantuan',
+      'route': Routes.help,
+    },
+    {
+      'icon': AppAsset.iconLogout,
+      'label': 'Keluar',
+      'route': Routes.login,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> menu = [
-      {
-        'icon': AppAsset.iconProfile,
-        'label': 'Akun Saya',
-        'onTap': () {
-          // context.goNamed('account');
-          debugPrint('account');
-        },
-      },
-      {
-        'icon': AppAsset.iconMessage,
-        'label': 'Pesan',
-        'onTap': () {
-          // context.goNamed('message');
-          debugPrint('message');
-        },
-      },
-      {
-        'icon': AppAsset.iconLove,
-        'label': 'Mitra Favorit',
-        'onTap': () {
-          // context.goNamed('mitra_favourite');
-          debugPrint('mitra_favourite');
-        },
-      },
-      {
-        'icon': AppAsset.iconClock,
-        'label': 'Riwayat Pesanan',
-        'onTap': () {
-          // context.goNamed('history');
-          debugPrint('history');
-        },
-      },
-      {
-        'icon': AppAsset.iconSetting,
-        'label': 'Pengaturan',
-        'onTap': () {
-          // context.goNamed('setting');
-          debugPrint('setting');
-        },
-      },
-      {
-        'icon': AppAsset.iconQuestionMark,
-        'label': 'Bantuan',
-        'onTap': () {
-          // context.goNamed('help');
-          debugPrint('help');
-        },
-      },
-      {
-        'icon': AppAsset.iconLogout,
-        'label': 'Keluar',
-        'onTap': () {
-          // TODO: create method logout
-          context.goNamed(Routes.login);
-        },
-      },
-    ];
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -136,24 +115,10 @@ class ProfilePage extends StatelessWidget {
                     child: ListView.builder(
                       itemCount: menu.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: menu[index]['onTap'],
-                          child: Container(
-                            color: Colors.white,
-                            padding: const EdgeInsets.all(20),
-                            child: Row(
-                              children: [
-                                ImageIcon(
-                                  AssetImage('${menu[index]['icon']}'),
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  '${menu[index]['label']}',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
+                        return MenuItem(
+                          label: menu[index]['label'],
+                          icon: menu[index]['icon'],
+                          routeName: menu[index]['route'],
                         );
                       },
                     ),
@@ -163,6 +128,54 @@ class ProfilePage extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class MenuItem extends StatelessWidget {
+  const MenuItem({
+    Key? key,
+    required this.label,
+    required this.icon,
+    required this.routeName,
+    // required this.onTap,
+  }) : super(key: key);
+
+  // final List<Map<String, dynamic>> menu;
+
+  final String label;
+  final String icon;
+  final String routeName;
+  // final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (routeName == Routes.login) {
+          // TODO: create method logout
+          context.goNamed(Routes.login);
+        } else {
+          // TODO: will implement later
+          // context.goNamed(menu['route']);
+        }
+      },
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            ImageIcon(
+              AssetImage(icon),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
   }
