@@ -13,8 +13,8 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   // controller
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   // state cubit
   final SwitchCubit _switchCubit = SwitchCubit(false);

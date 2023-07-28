@@ -4,15 +4,15 @@ import 'package:pinput/pinput.dart';
 import '../config/app_color.dart';
 
 class CustomPinput extends StatelessWidget {
-  CustomPinput({
+  const CustomPinput({
     Key? key,
     required this.controller,
     required this.focusNode,
   }) : super(key: key);
 
-  TextEditingController controller;
+  final TextEditingController controller;
 
-  FocusNode focusNode;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {

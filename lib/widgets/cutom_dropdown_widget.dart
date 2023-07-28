@@ -11,7 +11,7 @@ class DropdownCubit extends Cubit<String?> {
 }
 
 class CustomDropdown extends StatelessWidget {
-  CustomDropdown({
+  const CustomDropdown({
     Key? key,
     required this.items,
   }) : super(key: key);

@@ -109,7 +109,7 @@ class HeaderSection extends StatelessWidget {
 class HeaderContent extends StatelessWidget {
   HeaderContent({super.key});
 
-  List<String> dummyData = [
+  final List<String> dummyData = [
     'Perum CGM Blok A',
     'Desa Salagedang, Kecamatan Sukahaji, Kabupaten Majalengka',
     'Perum CGM Blok C',
@@ -153,7 +153,7 @@ class HeaderContent extends StatelessWidget {
               items: dummyData,
             ),
           ),
-          NotificationIcon(),
+          const NotificationIcon(),
         ],
       ),
     );
