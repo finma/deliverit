@@ -67,7 +67,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'change-password',
                   name: Routes.changePassword,
-                  builder: (context, state) => const ChangePasswordPage(),
+                  builder: (context, state) => ChangePasswordPage(),
                 ),
               ],
             ),
