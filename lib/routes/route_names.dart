@@ -14,6 +14,7 @@ class Routes {
   static const String paymentMethod = 'payment-method';
   static const String profile = 'profile';
   static const String register = 'register';
+  static const String resetPassword = 'reset-password';
   static const String setPassword = 'set-password';
   static const String setting = 'setting';
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
+import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 import '/widgets/custom_text_form_field_widget.dart';
 
@@ -80,7 +82,7 @@ class ChangePasswordPage extends StatelessWidget {
           label: 'SIMPAN',
           onTap: () {
             if (_formKey.currentState!.validate()) {
-              // TODO: change password method
+              context.goNamed(Routes.resetPassword);
               debugPrint('SIMPAN');
             }
           },
