@@ -1,9 +1,15 @@
-import 'package:deliverit/pages/profile_page.dart';
 import 'package:go_router/go_router.dart';
 
+import '/pages/account_page.dart';
+import '/pages/help_page.dart';
+import '/pages/history_page.dart';
 import '/pages/home_page.dart';
 import '/pages/login_page.dart';
+import '/pages/message_page.dart';
+import '/pages/mitra_favourite_page.dart';
+import '/pages/profile_page.dart';
 import '/pages/register_page.dart';
+import '/pages/setting_page.dart';
 import '/pages/verfication_pages.dart';
 
 part 'route_names.dart';
@@ -19,6 +25,38 @@ final router = GoRouter(
           path: 'profile',
           name: Routes.profile,
           builder: (context, state) => ProfilePage(),
+          routes: [
+            GoRoute(
+              path: 'account',
+              name: Routes.account,
+              builder: (context, state) => const AccountPage(),
+            ),
+            GoRoute(
+              path: 'message',
+              name: Routes.message,
+              builder: (context, state) => const MessagePage(),
+            ),
+            GoRoute(
+              path: 'mitra-favourite',
+              name: Routes.mitraFavourite,
+              builder: (context, state) => const MitraFavouritePage(),
+            ),
+            GoRoute(
+              path: 'history',
+              name: Routes.history,
+              builder: (context, state) => const HistoryPage(),
+            ),
+            GoRoute(
+              path: 'setting',
+              name: Routes.setting,
+              builder: (context, state) => const SettingPage(),
+            ),
+            GoRoute(
+              path: 'help',
+              name: Routes.help,
+              builder: (context, state) => const HelpPage(),
+            ),
+          ],
         ),
       ],
     ),
