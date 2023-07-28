@@ -12,6 +12,7 @@ class AppAsset {
   static const iconLocation = 'assets/images/icon_location.png';
   static const iconLock = 'assets/images/icon_lock.png';
   static const iconLogout = 'assets/images/icon_logout.png';
+  static const iconLove = 'assets/images/icon_love.png';
   static const iconMail = 'assets/images/icon_mail.png';
   static const iconMessage = 'assets/images/icon_message.png';
   static const iconNotification = 'assets/images/icon_notification.png';
