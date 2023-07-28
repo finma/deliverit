@@ -1,20 +1,21 @@
 import 'package:go_router/go_router.dart';
 
-import '/pages/account_page.dart';
-import '/pages/help_page.dart';
-import '/pages/history_page.dart';
 import '/pages/home_page.dart';
 import '/pages/login_page.dart';
-import '/pages/message_page.dart';
-import '/pages/mitra_favourite_page.dart';
+import '/pages/register_page.dart';
+import '/pages/reset_password_page.dart';
+import '/pages/verfication_pages.dart';
+
 import '/pages/profile_page.dart';
+import '/pages/profile/account/account_page.dart';
+import '/pages/profile/help/help_page.dart';
+import '/pages/profile/history/history_page.dart';
+import '/pages/profile/message/message_page.dart';
+import '/pages/profile/mitra_favourite/mitra_favourite_page.dart';
+import '/pages/profile/setting/setting_page.dart';
 import '/pages/profile/setting/change_password_page.dart';
 import '/pages/profile/setting/my_address_page.dart';
 import '/pages/profile/setting/payment_method_page.dart';
-import '/pages/register_page.dart';
-import '/pages/reset_password_page.dart';
-import '/pages/setting_page.dart';
-import '/pages/verfication_pages.dart';
 
 part 'route_names.dart';
 
