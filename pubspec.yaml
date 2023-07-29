@@ -43,6 +43,7 @@ dependencies:
   pinput: ^2.2.21
   email_validator: ^2.1.17
   dropdown_button2: ^2.1.4
+  flutter_native_splash: ^2.2.18
 
 dev_dependencies:
   flutter_test:
