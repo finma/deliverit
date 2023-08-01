@@ -34,7 +34,7 @@ final router = GoRouter(
             GoRoute(
               path: 'account',
               name: Routes.account,
-              builder: (context, state) => const AccountPage(),
+              builder: (context, state) => AccountPage(),
             ),
             GoRoute(
               path: 'message',
