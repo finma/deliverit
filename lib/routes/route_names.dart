@@ -18,4 +18,5 @@ class Routes {
   static const String resetPassword = 'reset-password';
   static const String setPassword = 'set-password';
   static const String setting = 'setting';
+  static const String updateAddress = 'update-address';
 }

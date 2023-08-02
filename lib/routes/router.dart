@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 
+import '/model/address.dart';
+
 import '/pages/home/home_page.dart';
 import '/pages/login_page.dart';
 import '/pages/register_page.dart';
@@ -15,6 +17,7 @@ import '/pages/profile/mitra_favourite/mitra_favourite_page.dart';
 import '/pages/profile/setting/setting_page.dart';
 import '/pages/profile/setting/change_password_page.dart';
 import '/pages/profile/setting/create_address_page.dart';
+import '/pages/profile/setting/update_address_page.dart';
 import '/pages/profile/setting/my_address_page.dart';
 import '/pages/profile/setting/payment_method_page.dart';
 
@@ -60,13 +63,20 @@ final router = GoRouter(
                 GoRoute(
                   path: 'my-address',
                   name: Routes.myAddress,
-                  builder: (context, state) => const MyAddressPage(),
+                  builder: (context, state) => MyAddressPage(),
                   routes: [
                     GoRoute(
                       path: 'create-address',
                       name: Routes.createAddress,
                       builder: (context, state) => CreateAddressPage(),
-                    )
+                    ),
+                    GoRoute(
+                      path: 'update-address',
+                      name: Routes.updateAddress,
+                      builder: (context, state) => UpdateAddressPage(
+                        address: state.extra as Address,
+                      ),
+                    ),
                   ],
                 ),
                 GoRoute(
