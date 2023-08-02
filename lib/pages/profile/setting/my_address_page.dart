@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/routes/router.dart';
 
 class MyAddressPage extends StatelessWidget {
   const MyAddressPage({super.key});
@@ -49,30 +51,35 @@ class MyAddressPage extends StatelessWidget {
                     .titleMedium!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              Container(
-                height: 32,
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColor.primary,
-                  ),
-                ),
-                child: Row(
-                  children: const [
-                    Icon(
-                      Icons.add_circle_outline,
+              GestureDetector(
+                onTap: () {
+                  context.goNamed(Routes.createAddress);
+                },
+                child: Container(
+                  height: 32,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
                       color: AppColor.primary,
                     ),
-                    SizedBox(width: 2),
-                    Text(
-                      'Tambah Alamat',
-                      style: TextStyle(
-                        fontSize: 12,
+                  ),
+                  child: Row(
+                    children: const [
+                      Icon(
+                        Icons.add_circle_outline,
                         color: AppColor.primary,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 2),
+                      Text(
+                        'Tambah Alamat',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColor.primary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
