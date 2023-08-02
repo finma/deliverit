@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '/model/address.dart';
+
 class AppFormat {
   static String date(String stringDate) {
     // 2023-12-31
@@ -19,5 +21,9 @@ class AppFormat {
       symbol: 'Rp',
       decimalDigits: 0,
     ).format(number);
+  }
+
+  static String address(Address address) {
+    return '${address.address}, ${address.subdistrict}, ${address.city}, ${address.province}, ${address.postalCode}';
   }
 }
