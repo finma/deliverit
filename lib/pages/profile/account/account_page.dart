@@ -166,7 +166,7 @@ class AccountPage extends StatelessWidget {
               ),
             ),
           ),
-          BlocBuilder<SelectCubit, String?>(
+          BlocBuilder<SelectCubit, dynamic>(
             bloc: selectedGender,
             builder: (context, state) {
               return Expanded(
