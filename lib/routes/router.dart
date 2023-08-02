@@ -14,6 +14,7 @@ import '/pages/profile/message/message_page.dart';
 import '/pages/profile/mitra_favourite/mitra_favourite_page.dart';
 import '/pages/profile/setting/setting_page.dart';
 import '/pages/profile/setting/change_password_page.dart';
+import '/pages/profile/setting/create_address_page.dart';
 import '/pages/profile/setting/my_address_page.dart';
 import '/pages/profile/setting/payment_method_page.dart';
 
@@ -60,6 +61,13 @@ final router = GoRouter(
                   path: 'my-address',
                   name: Routes.myAddress,
                   builder: (context, state) => const MyAddressPage(),
+                  routes: [
+                    GoRoute(
+                      path: 'create-address',
+                      name: Routes.createAddress,
+                      builder: (context, state) => CreateAddressPage(),
+                    )
+                  ],
                 ),
                 GoRoute(
                   path: 'payment-method',
