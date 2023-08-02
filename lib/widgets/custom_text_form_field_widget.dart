@@ -16,17 +16,21 @@ class CustomTextFormField extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.hintText,
-    required this.iconAsset,
+    this.iconAsset,
+    this.icon,
     this.isDense = true,
     this.isPassword = false,
+    this.maxLines = 1,
     this.validator,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String hintText;
-  final String iconAsset;
+  final String? iconAsset;
+  final Icon? icon;
   final bool isDense;
   final bool isPassword;
+  final int maxLines;
   final String? Function(String?)? validator;
 
   @override
@@ -39,6 +43,8 @@ class CustomTextFormField extends StatelessWidget {
             controller: controller,
             obscureText: isPassword ? isPasswordHidden : false,
             validator: validator,
+            maxLines: maxLines,
+            textAlign: TextAlign.start,
             decoration: InputDecoration(
               isDense: isDense,
               filled: true,
@@ -49,8 +55,14 @@ class CustomTextFormField extends StatelessWidget {
                 vertical: 20,
                 horizontal: 16,
               ),
-              prefixIcon: ImageIcon(
-                AssetImage(iconAsset),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 16, right: 8),
+                child: icon ??
+                    Image.asset(
+                      iconAsset!,
+                      width: 24,
+                      height: 24,
+                    ),
               ),
               suffixIcon: isPassword
                   ? IconButton(
