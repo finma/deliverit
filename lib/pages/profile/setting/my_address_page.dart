@@ -1,3 +1,5 @@
+import 'package:deliverit/config/app_format.dart';
+import 'package:deliverit/data/address.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,7 +8,9 @@ import '/config/app_color.dart';
 import '/routes/router.dart';
 
 class MyAddressPage extends StatelessWidget {
-  const MyAddressPage({super.key});
+  MyAddressPage({super.key});
+
+  final address = DataAddress.address1;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,14 @@ class MyAddressPage extends StatelessWidget {
           const Divider(thickness: 3, height: 0),
           customListItem(
             context: context,
-            title: 'Cikara Studio',
-            subtitle:
-                'Perum Cipta Graha Mandiri Blok C 108, Sukarindik, Kec.Bungursari, Tasikmalaya',
-            onEditPressed: () {},
+            title: address.name!,
+            subtitle: AppFormat.address(address),
+            onEditPressed: () {
+              context.goNamed(
+                Routes.updateAddress,
+                extra: address,
+              );
+            },
           ),
         ],
       ),
