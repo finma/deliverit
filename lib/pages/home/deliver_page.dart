@@ -63,7 +63,7 @@ class _DeliverPageState extends State<DeliverPage> {
     LatLng latlngPosition = LatLng(position.latitude, position.longitude);
 
     CameraPosition cameraPosition =
-        CameraPosition(target: latlngPosition, zoom: 14);
+        CameraPosition(target: latlngPosition, zoom: 16);
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
