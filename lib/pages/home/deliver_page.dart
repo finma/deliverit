@@ -87,6 +87,7 @@ class _DeliverPageState extends State<DeliverPage> {
               myLocationEnabled: true,
               zoomControlsEnabled: true,
               zoomGesturesEnabled: true,
+              compassEnabled: true,
               onMapCreated: (controller) {
                 _controllerGoogleMap.complete(controller);
                 newGoogleMapController = controller;
@@ -157,14 +158,20 @@ class _DeliverPageState extends State<DeliverPage> {
                           ),
                         ),
                         const SizedBox(width: 22),
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(32),
+                        GestureDetector(
+                          onTap: () {
+                            locatePosition();
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            child:
+                                const ImageIcon(AssetImage(AppAsset.iconGps)),
                           ),
-                          child: const ImageIcon(AssetImage(AppAsset.iconGps)),
                         )
                       ],
                     )
