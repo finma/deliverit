@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '/model/address.dart';
 
+import '/pages/home/deliver_page.dart';
 import '/pages/home/home_page.dart';
 import '/pages/login_page.dart';
 import '/pages/register_page.dart';
@@ -30,6 +31,11 @@ final router = GoRouter(
       name: Routes.home,
       builder: (context, state) => HomePage(),
       routes: [
+        GoRoute(
+          path: 'deliver',
+          name: Routes.deliver,
+          builder: (context, state) => const DeliverPage(),
+        ),
         GoRoute(
           path: 'profile',
           name: Routes.profile,

@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                         'Mau angkut barang ke tempat\nbaru? Sama DeliverIt bisa\nsekali jalan. (Contoh: pindahan\nrumah)',
                     icon: AppAsset.fotoBox,
                     onTap: () {
-                      debugPrint('Pindahan');
+                      context.goNamed(Routes.deliver);
                     },
                   ),
                   const SizedBox(height: 64),
