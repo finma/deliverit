@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/config/app_asset.dart';
@@ -75,6 +76,18 @@ class _DeliverPageState extends State<DeliverPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.white,
+        onPressed: () {
+          context.pop();
+        },
+        child: const Icon(
+          Icons.arrow_back_rounded,
+          color: AppColor.primary,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       body: SafeArea(
         child: Stack(
           children: [
