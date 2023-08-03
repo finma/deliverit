@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/cubit/select_cubit.dart';
 
 class DeliverPage extends StatefulWidget {
   const DeliverPage({super.key});
@@ -24,7 +26,7 @@ class _DeliverPageState extends State<DeliverPage> {
   // * CURRENT LOCATION
   Position? currentLocation;
   var geoLocator = Geolocator();
-  double bottomPaddingOfMap = 0;
+  SelectCubit bottomPaddingOfMap = SelectCubit(0.0);
 
   // * FUNCTION TO GET CURRENT LOCATION
   void locatePosition() async {
@@ -92,25 +94,28 @@ class _DeliverPageState extends State<DeliverPage> {
         child: Stack(
           children: [
             // * GOOGLE MAP
-            GoogleMap(
-              padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
-              mapType: MapType.normal,
-              myLocationButtonEnabled: true,
-              initialCameraPosition: _kGooglePlex,
-              myLocationEnabled: true,
-              zoomControlsEnabled: true,
-              zoomGesturesEnabled: true,
-              compassEnabled: true,
-              onMapCreated: (controller) {
-                _controllerGoogleMap.complete(controller);
-                newGoogleMapController = controller;
+            BlocBuilder<SelectCubit, dynamic>(
+              bloc: bottomPaddingOfMap,
+              builder: (context, bottomPadding) {
+                return GoogleMap(
+                  padding: EdgeInsets.only(bottom: bottomPadding),
+                  mapType: MapType.normal,
+                  myLocationButtonEnabled: true,
+                  initialCameraPosition: _kGooglePlex,
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: true,
+                  zoomGesturesEnabled: true,
+                  compassEnabled: true,
+                  onMapCreated: (controller) {
+                    _controllerGoogleMap.complete(controller);
+                    newGoogleMapController = controller;
 
-                setState(() {
-                  bottomPaddingOfMap = 120;
-                });
+                    bottomPaddingOfMap.setSelectedValue(120.0);
 
-                // * GET CURRENT LOCATION
-                locatePosition();
+                    // * GET CURRENT LOCATION
+                    locatePosition();
+                  },
+                );
               },
             ),
 
