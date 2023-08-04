@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/select_cubit.dart';
+import '/routes/router.dart';
 
 class DeliverPage extends StatefulWidget {
   const DeliverPage({super.key});
@@ -151,7 +152,7 @@ class _DeliverPageState extends State<DeliverPage> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
-                              debugPrint('Cari lokasi tujuan');
+                              context.goNamed(Routes.searchPage);
                             },
                             child: Container(
                               // width: double.infinity,

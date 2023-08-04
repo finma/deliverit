@@ -17,6 +17,7 @@ class Routes {
   static const String profile = 'profile';
   static const String register = 'register';
   static const String resetPassword = 'reset-password';
+  static const String searchPage = 'search-page';
   static const String setPassword = 'set-password';
   static const String setting = 'setting';
   static const String updateAddress = 'update-address';

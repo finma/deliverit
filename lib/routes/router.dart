@@ -4,6 +4,7 @@ import '/model/address.dart';
 
 import '/pages/home/deliver_page.dart';
 import '/pages/home/home_page.dart';
+import '/pages/home/search_page.dart';
 import '/pages/login_page.dart';
 import '/pages/register_page.dart';
 import '/pages/reset_password_page.dart';
@@ -35,6 +36,13 @@ final router = GoRouter(
           path: 'deliver',
           name: Routes.deliver,
           builder: (context, state) => const DeliverPage(),
+          routes: [
+            GoRoute(
+              path: 'search',
+              name: Routes.searchPage,
+              builder: (context, state) => SearchPage(),
+            )
+          ],
         ),
         GoRoute(
           path: 'profile',
