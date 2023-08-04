@@ -22,6 +22,9 @@ class CustomTextFormField extends StatelessWidget {
     this.isPassword = false,
     this.maxLines = 1,
     this.validator,
+    this.paddingVertical = 20,
+    this.paddingHorizontal = 16,
+    this.borderRadius = 12,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -32,6 +35,9 @@ class CustomTextFormField extends StatelessWidget {
   final bool isPassword;
   final int maxLines;
   final String? Function(String?)? validator;
+  final double paddingVertical;
+  final double paddingHorizontal;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +57,9 @@ class CustomTextFormField extends StatelessWidget {
               fillColor: Colors.white,
               hintText: hintText,
               hintStyle: const TextStyle(fontSize: 14),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 16,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: paddingVertical,
+                horizontal: paddingHorizontal,
               ),
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 8),
@@ -79,14 +85,14 @@ class CustomTextFormField extends StatelessWidget {
                     )
                   : null,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
                 borderSide: const BorderSide(color: AppColor.secondary),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
                 borderSide: const BorderSide(color: AppColor.secondary),
               ),
             ),
