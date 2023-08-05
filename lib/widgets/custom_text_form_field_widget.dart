@@ -25,6 +25,7 @@ class CustomTextFormField extends StatelessWidget {
     this.paddingVertical = 20,
     this.paddingHorizontal = 16,
     this.borderRadius = 12,
+    this.onChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -38,6 +39,7 @@ class CustomTextFormField extends StatelessWidget {
   final double paddingVertical;
   final double paddingHorizontal;
   final double borderRadius;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class CustomTextFormField extends StatelessWidget {
             validator: validator,
             maxLines: maxLines,
             textAlign: TextAlign.start,
+            onChanged: onChanged,
             decoration: InputDecoration(
               isDense: isDense,
               filled: true,
