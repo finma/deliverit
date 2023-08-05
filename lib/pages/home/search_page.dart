@@ -22,7 +22,16 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
 
-    pickUpController.text = deliverCubit.state.pickUpAddress!.placeName ?? '';
+    // pickUpController.text = deliverCubit.state.pickUpAddress!.placeName ?? '';
+    // dropOffController.text = deliverCubit.state.dropOffAddress!.placeName ?? '';
+
+    if (deliverCubit.state.pickUpAddress != null) {
+      pickUpController.text = deliverCubit.state.pickUpAddress!.placeName!;
+    }
+
+    if (deliverCubit.state.dropOffAddress != null) {
+      dropOffController.text = deliverCubit.state.dropOffAddress!.placeName!;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +96,10 @@ class SearchPage extends StatelessWidget {
                   return ListView.builder(
                     itemCount: state.length,
                     itemBuilder: (context, index) {
-                      return PredictionTile(placePrediction: state[index]);
+                      return PredictionTile(
+                        placePrediction: placePrediction,
+                        predictionItem: state[index],
+                      );
                     },
                   );
                 },
@@ -103,55 +115,67 @@ class SearchPage extends StatelessWidget {
 class PredictionTile extends StatelessWidget {
   const PredictionTile({
     super.key,
+    required this.predictionItem,
     required this.placePrediction,
   });
 
-  final PlacePrediction placePrediction;
+  final PlacePrediction predictionItem;
+  final PlacePredictionCubit placePrediction;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 16, top: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.withOpacity(0.5),
+    return GestureDetector(
+      onTap: () async {
+        await GoogleMapService.getPlaceAddressDetails(
+          predictionItem.placeId,
+          context,
+        );
+
+        placePrediction.removePlacePredictionList();
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 16, top: 16),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey.withOpacity(0.5),
+            ),
           ),
         ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const ImageIcon(
-            AssetImage(AppAsset.iconPoint),
-            color: Colors.black,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  placePrediction.mainText,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  placePrediction.secondaryText,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
-                )
-              ],
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const ImageIcon(
+              AssetImage(AppAsset.iconPoint),
+              color: Colors.black,
             ),
-          )
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    predictionItem.mainText,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    predictionItem.secondaryText,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
