@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/map_config.dart';
 import '/cubit/deliver/deliver_cubit.dart';
@@ -21,8 +22,8 @@ class GoogleMapService {
       placeAddress = response['results'][0]['formatted_address'];
 
       MapAddress userPickupAddress = MapAddress();
-      userPickupAddress.longitude = position.longitude.toString();
-      userPickupAddress.latitude = position.latitude.toString();
+      userPickupAddress.longitude = position.longitude;
+      userPickupAddress.latitude = position.latitude;
       userPickupAddress.placeName = placeAddress;
 
       // debugPrint('address: $placeAddress');
@@ -58,5 +59,46 @@ class GoogleMapService {
     }
 
     return [];
+  }
+
+  static Future<void> getPlaceAddressDetails(
+    String placeId,
+    BuildContext context,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    String url =
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey';
+
+    var response = await RequestHelper.getRequest(url);
+
+    // debugPrint('response: ${response['result']['formatted_address']}');
+
+    if (response != 'failed') {
+      if (response['status'] == 'OK') {
+        MapAddress dropOffAddress = MapAddress();
+        dropOffAddress.placeName = response['result']['name'];
+        dropOffAddress.placeId = placeId;
+        dropOffAddress.latitude =
+            response['result']['geometry']['location']['lat'];
+        dropOffAddress.longitude =
+            response['result']['geometry']['location']['lng'];
+        dropOffAddress.placeFormattedAddress =
+            response['result']['formatted_address'];
+
+        if (context.mounted) {
+          // debugPrint('place address: ${dropOffAddress.placeName}');
+
+          context.read<DeliverCubit>().setDropOffAddress(dropOffAddress);
+          context.pop();
+          context.pop();
+        }
+
+        // return placeAddress;
+      }
+    }
   }
 }
