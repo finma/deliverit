@@ -6,6 +6,7 @@ import '/config/map_config.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/helper/api.dart';
 import '/model/map_address.dart';
+import '/model/place_prediction.dart';
 
 class GoogleMapService {
   static Future<String> searchCoordinateAddress(
@@ -32,5 +33,30 @@ class GoogleMapService {
     }
 
     return placeAddress;
+  }
+
+  static Future<List<PlacePrediction>> findPlace(String placeName) async {
+    String url =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:id&language=id';
+
+    if (placeName.length > 1) {
+      var response = await RequestHelper.getRequest(url);
+
+      if (response != 'failed') {
+        if (response['status'] == 'OK') {
+          var predictions = response['predictions'];
+
+          List<PlacePrediction> placeList = (predictions as List)
+              .map((e) => PlacePrediction.fromJson(e))
+              .toList();
+
+          // debugPrint('prediction: ${placeList[0].mainText}');
+
+          return placeList;
+        }
+      }
+    }
+
+    return [];
   }
 }
