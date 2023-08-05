@@ -11,6 +11,7 @@ import '/config/app_color.dart';
 import '/cubit/mylocation/mylocation_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/routes/router.dart';
+import '/services/googlemap.dart';
 
 class DeliverPage extends StatefulWidget {
   const DeliverPage({super.key});
@@ -85,6 +86,11 @@ class _DeliverPageState extends State<DeliverPage> {
           CameraPosition(target: latlngPosition, zoom: 16);
       newGoogleMapController
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+      // * GET CURRENT ADDRESS
+      if (context.mounted) {
+        await GoogleMapService.searchCoordinateAddress(position, context);
+      }
     }
 
     return Scaffold(
@@ -172,8 +178,8 @@ class _DeliverPageState extends State<DeliverPage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(100),
                               ),
-                              child: Row(
-                                children: const [
+                              child: const Row(
+                                children: [
                                   ImageIcon(AssetImage(AppAsset.iconLocation)),
                                   SizedBox(width: 12),
                                   Text(
