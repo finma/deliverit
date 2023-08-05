@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/cubit/deliver/deliver_cubit.dart';
 import '/widgets/custom_text_form_field_widget.dart';
 
 class SearchPage extends StatelessWidget {
@@ -73,12 +75,19 @@ class SearchPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                CustomTextFormField(
-                  controller: pickUpController,
-                  iconAsset: AppAsset.iconLocation,
-                  hintText: 'Lokasi Pengambilan Barang',
-                  paddingVertical: 8,
-                  borderRadius: 100,
+                BlocListener<DeliverCubit, DeliverState>(
+                  listener: (context, state) {
+                    if (state.pickUpAddress != null) {
+                      pickUpController.text = state.pickUpAddress!.placeName!;
+                    }
+                  },
+                  child: CustomTextFormField(
+                    controller: pickUpController,
+                    iconAsset: AppAsset.iconLocation,
+                    hintText: 'Lokasi Pengambilan Barang',
+                    paddingVertical: 8,
+                    borderRadius: 100,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 CustomTextFormField(
