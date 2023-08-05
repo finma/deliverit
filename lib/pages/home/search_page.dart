@@ -48,6 +48,12 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+
+    if (deliverCubit.state.pickUpAddress != null) {
+      pickUpController.text = deliverCubit.state.pickUpAddress!.placeName!;
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -75,19 +81,12 @@ class SearchPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                BlocListener<DeliverCubit, DeliverState>(
-                  listener: (context, state) {
-                    if (state.pickUpAddress != null) {
-                      pickUpController.text = state.pickUpAddress!.placeName!;
-                    }
-                  },
-                  child: CustomTextFormField(
-                    controller: pickUpController,
-                    iconAsset: AppAsset.iconLocation,
-                    hintText: 'Lokasi Pengambilan Barang',
-                    paddingVertical: 8,
-                    borderRadius: 100,
-                  ),
+                CustomTextFormField(
+                  controller: pickUpController,
+                  iconAsset: AppAsset.iconLocation,
+                  hintText: 'Lokasi Pengambilan Barang',
+                  paddingVertical: 8,
+                  borderRadius: 100,
                 ),
                 const SizedBox(height: 16),
                 CustomTextFormField(
