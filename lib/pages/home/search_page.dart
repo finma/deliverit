@@ -6,6 +6,7 @@ import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/placeprediction_cubit.dart';
+import '/cubit/select_cubit.dart';
 import '/model/map_address.dart';
 import '/model/place_prediction.dart';
 import '/services/googlemap.dart';
@@ -18,6 +19,7 @@ class SearchPage extends StatelessWidget {
   final TextEditingController dropOffController = TextEditingController();
 
   final PlacePredictionCubit placePrediction = PlacePredictionCubit([]);
+  final SelectCubit isPickUp = SelectCubit(true);
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,12 @@ class SearchPage extends StatelessWidget {
                       hintText: 'Lokasi Pengambilan Barang',
                       paddingVertical: 8,
                       borderRadius: 100,
+                      onChanged: (value) async {
+                        var placeList = await GoogleMapService.findPlace(value);
+
+                        isPickUp.setSelectedValue(true);
+                        placePrediction.addPlacePredictionList(placeList);
+                      },
                     );
                   },
                 ),
@@ -81,6 +89,7 @@ class SearchPage extends StatelessWidget {
                       onChanged: (value) async {
                         var placeList = await GoogleMapService.findPlace(value);
 
+                        isPickUp.setSelectedValue(false);
                         placePrediction.addPlacePredictionList(placeList);
                       },
                     );
@@ -104,6 +113,7 @@ class SearchPage extends StatelessWidget {
                         placePrediction: placePrediction,
                         deliverCubit: deliverCubit,
                         predictionItem: state[index],
+                        isPickUp: isPickUp,
                       );
                     },
                   );
@@ -123,11 +133,13 @@ class PredictionTile extends StatelessWidget {
     required this.predictionItem,
     required this.placePrediction,
     required this.deliverCubit,
+    required this.isPickUp,
   });
 
   final PlacePrediction predictionItem;
   final PlacePredictionCubit placePrediction;
   final DeliverCubit deliverCubit;
+  final SelectCubit isPickUp;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +150,11 @@ class PredictionTile extends StatelessWidget {
           context,
         );
 
-        deliverCubit.setDropOffAddress(address);
+        if (isPickUp.state) {
+          deliverCubit.setPickUpAddress(address);
+        } else {
+          deliverCubit.setDropOffAddress(address);
+        }
 
         placePrediction.removePlacePredictionList();
       },
