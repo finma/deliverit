@@ -2,8 +2,8 @@ class MapAddress {
   String? placeFormattedAddress;
   String? placeName;
   String? placeId;
-  String? latitude;
-  String? longitude;
+  double? latitude;
+  double? longitude;
 
   MapAddress({
     this.placeFormattedAddress,
