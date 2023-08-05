@@ -10,7 +10,6 @@ import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/mylocation/mylocation_cubit.dart';
-import '/cubit/select_cubit.dart';
 import '/model/map_address.dart';
 import '/routes/router.dart';
 import '/services/googlemap.dart';
@@ -35,7 +34,6 @@ class _DeliverPageState extends State<DeliverPage> {
   // * CURRENT LOCATION
   Position? currentLocation;
   var geoLocator = Geolocator();
-  SelectCubit bottomPaddingOfMap = SelectCubit(0.0);
   CameraPosition? myLocation;
 
   static const CameraPosition initialCameraPosition = CameraPosition(
@@ -129,11 +127,14 @@ class _DeliverPageState extends State<DeliverPage> {
         child: Stack(
           children: [
             // * GOOGLE MAP
-            BlocBuilder<SelectCubit, dynamic>(
-              bloc: bottomPaddingOfMap,
-              builder: (context, bottomPadding) {
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                if (state.isObtainDirection == true) {
+                  debugPrint('obtain direction');
+                  getPlaceDirection();
+                }
                 return GoogleMap(
-                  padding: EdgeInsets.only(bottom: bottomPadding),
+                  padding: const EdgeInsets.only(bottom: 200),
                   mapType: MapType.normal,
                   myLocationButtonEnabled: true,
                   initialCameraPosition: myLocation ?? initialCameraPosition,
@@ -144,8 +145,6 @@ class _DeliverPageState extends State<DeliverPage> {
                   onMapCreated: (controller) {
                     _controllerGoogleMap.complete(controller);
                     newGoogleMapController = controller;
-
-                    bottomPaddingOfMap.setSelectedValue(120.0);
 
                     // * GET CURRENT LOCATION
                     locatePosition();
@@ -230,5 +229,18 @@ class _DeliverPageState extends State<DeliverPage> {
         ),
       ),
     );
+  }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos = context.read<DeliverCubit>().state.pickUpAddress;
+    var finalPos = context.read<DeliverCubit>().state.dropOffAddress;
+
+    var pickUpLatLng = LatLng(initialPos!.latitude!, initialPos.longitude!);
+    var dropOffLatLng = LatLng(finalPos!.latitude!, finalPos.longitude!);
+
+    var details = await GoogleMapService.obtainPlaceDirectionDetails(
+        pickUpLatLng, dropOffLatLng);
+
+    debugPrint('encoded points: ${details.encodedPoints}');
   }
 }
