@@ -46,6 +46,7 @@ dependencies:
   flutter_native_splash: ^2.2.18
   google_maps_flutter: ^2.3.0
   geolocator: ^9.0.2
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
