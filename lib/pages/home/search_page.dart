@@ -50,9 +50,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
 
-    if (deliverCubit.state.pickUpAddress != null) {
-      pickUpController.text = deliverCubit.state.pickUpAddress!.placeName!;
-    }
+    pickUpController.text = deliverCubit.state.pickUpAddress!.placeName ?? '';
 
     return Scaffold(
       appBar: AppBar(
