@@ -12,7 +12,7 @@ class GoogleMapService {
       Position position, BuildContext context) async {
     String placeAddress = '';
     String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$geoKey';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey';
 
     var response = await RequestHelper.getRequest(url);
 
