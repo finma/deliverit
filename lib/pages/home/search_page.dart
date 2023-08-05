@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '/cubit/placeprediction_cubit.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
+import '/cubit/placeprediction_cubit.dart';
+import '/model/map_address.dart';
 import '/model/place_prediction.dart';
 import '/services/googlemap.dart';
 import '/widgets/custom_text_form_field_widget.dart';
@@ -22,17 +23,6 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
 
-    // pickUpController.text = deliverCubit.state.pickUpAddress!.placeName ?? '';
-    // dropOffController.text = deliverCubit.state.dropOffAddress!.placeName ?? '';
-
-    if (deliverCubit.state.pickUpAddress != null) {
-      pickUpController.text = deliverCubit.state.pickUpAddress!.placeName!;
-    }
-
-    if (deliverCubit.state.dropOffAddress != null) {
-      dropOffController.text = deliverCubit.state.dropOffAddress!.placeName!;
-    }
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -43,7 +33,7 @@ class SearchPage extends StatelessWidget {
         title: const Text(
           'Mau kirim barang kemana?',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -54,30 +44,46 @@ class SearchPage extends StatelessWidget {
           Container(
             width: double.infinity,
             // height: 150,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
             decoration: const BoxDecoration(
               color: AppColor.primary,
             ),
             child: Column(
               children: [
-                CustomTextFormField(
-                  controller: pickUpController,
-                  iconAsset: AppAsset.iconLocation,
-                  hintText: 'Lokasi Pengambilan Barang',
-                  paddingVertical: 8,
-                  borderRadius: 100,
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    if (state.pickUpAddress != null) {
+                      pickUpController.text = state.pickUpAddress!.placeName!;
+                    }
+
+                    return CustomTextFormField(
+                      controller: pickUpController,
+                      iconAsset: AppAsset.iconLocation,
+                      hintText: 'Lokasi Pengambilan Barang',
+                      paddingVertical: 8,
+                      borderRadius: 100,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
-                CustomTextFormField(
-                  controller: dropOffController,
-                  iconAsset: AppAsset.iconLocation,
-                  hintText: 'Lokasi Tujuan Barang',
-                  paddingVertical: 8,
-                  borderRadius: 100,
-                  onChanged: (value) async {
-                    var placeList = await GoogleMapService.findPlace(value);
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    if (state.dropOffAddress != null) {
+                      dropOffController.text = state.dropOffAddress!.placeName!;
+                    }
 
-                    placePrediction.addPlacePredictionList(placeList);
+                    return CustomTextFormField(
+                      controller: dropOffController,
+                      iconAsset: AppAsset.iconLocation,
+                      hintText: 'Lokasi Tujuan Barang',
+                      paddingVertical: 8,
+                      borderRadius: 100,
+                      onChanged: (value) async {
+                        var placeList = await GoogleMapService.findPlace(value);
+
+                        placePrediction.addPlacePredictionList(placeList);
+                      },
+                    );
                   },
                 ),
               ],
@@ -87,8 +93,6 @@ class SearchPage extends StatelessWidget {
           Expanded(
             child: Container(
               width: double.infinity,
-              // height: MediaQuery.of(context).size.height - 150,
-              // color: Colors.amber,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: BlocBuilder<PlacePredictionCubit, List<PlacePrediction>>(
                 bloc: placePrediction,
@@ -98,6 +102,7 @@ class SearchPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return PredictionTile(
                         placePrediction: placePrediction,
+                        deliverCubit: deliverCubit,
                         predictionItem: state[index],
                       );
                     },
@@ -117,19 +122,23 @@ class PredictionTile extends StatelessWidget {
     super.key,
     required this.predictionItem,
     required this.placePrediction,
+    required this.deliverCubit,
   });
 
   final PlacePrediction predictionItem;
   final PlacePredictionCubit placePrediction;
+  final DeliverCubit deliverCubit;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await GoogleMapService.getPlaceAddressDetails(
+        MapAddress address = await GoogleMapService.getPlaceAddressDetails(
           predictionItem.placeId,
           context,
         );
+
+        deliverCubit.setDropOffAddress(address);
 
         placePrediction.removePlacePredictionList();
       },

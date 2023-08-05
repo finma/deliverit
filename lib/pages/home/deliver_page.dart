@@ -8,10 +8,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/mylocation/mylocation_cubit.dart';
 import '/cubit/select_cubit.dart';
+import '/model/map_address.dart';
 import '/routes/router.dart';
 import '/services/googlemap.dart';
+import '/widgets/custom_text_form_field_widget.dart';
 
 class DeliverPage extends StatefulWidget {
   const DeliverPage({super.key});
@@ -25,6 +28,9 @@ class _DeliverPageState extends State<DeliverPage> {
   final Completer<GoogleMapController> _controllerGoogleMap =
       Completer<GoogleMapController>();
   late GoogleMapController newGoogleMapController;
+
+  final TextEditingController pickUpController = TextEditingController();
+  final TextEditingController dropOffController = TextEditingController();
 
   // * CURRENT LOCATION
   Position? currentLocation;
@@ -40,6 +46,7 @@ class _DeliverPageState extends State<DeliverPage> {
   @override
   Widget build(BuildContext context) {
     MylocationCubit mylocationCubit = context.read<MylocationCubit>();
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
 
     // * SET INITIAL CAMERA POSITION
     if (mylocationCubit.state.position != null) {
@@ -99,7 +106,9 @@ class _DeliverPageState extends State<DeliverPage> {
 
       // * GET CURRENT ADDRESS
       if (context.mounted) {
-        await GoogleMapService.searchCoordinateAddress(position, context);
+        MapAddress address =
+            await GoogleMapService.searchCoordinateAddress(position);
+        deliverCubit.setPickUpAddress(address);
       }
     }
 
@@ -167,55 +176,49 @@ class _DeliverPageState extends State<DeliverPage> {
                       'Mau kirim barang kemana?',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              context.goNamed(Routes.searchPage);
-                            },
-                            child: Container(
-                              // width: double.infinity,
-                              height: 32,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 22),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              child: const Row(
-                                children: [
-                                  ImageIcon(AssetImage(AppAsset.iconLocation)),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    'Cari lokasi tujuan',
-                                    style: TextStyle(fontSize: 12),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 22),
-                        GestureDetector(
-                          onTap: () {
-                            locatePosition();
+                        BlocBuilder<DeliverCubit, DeliverState>(
+                          builder: (context, state) {
+                            if (deliverCubit.state.pickUpAddress != null) {
+                              pickUpController.text =
+                                  deliverCubit.state.pickUpAddress!.placeName!;
+                            }
+
+                            return CustomTextFormField(
+                              controller: pickUpController,
+                              iconAsset: AppAsset.iconLocation,
+                              hintText: 'Lokasi Pengambilan Barang',
+                              paddingVertical: 8,
+                              borderRadius: 100,
+                              isDisabled: true,
+                              onTap: () => context.goNamed(Routes.searchPage),
+                            );
                           },
-                          child: Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(32),
-                            ),
-                            child:
-                                const ImageIcon(AssetImage(AppAsset.iconGps)),
-                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        BlocBuilder<DeliverCubit, DeliverState>(
+                          builder: (context, state) {
+                            if (state.dropOffAddress != null) {
+                              dropOffController.text =
+                                  state.dropOffAddress!.placeName!;
+                            }
+
+                            return CustomTextFormField(
+                              controller: dropOffController,
+                              iconAsset: AppAsset.iconLocation,
+                              hintText: 'Lokasi Tujuan Barang',
+                              paddingVertical: 8,
+                              borderRadius: 100,
+                              isDisabled: true,
+                              onTap: () => context.goNamed(Routes.searchPage),
+                            );
+                          },
                         )
                       ],
                     )

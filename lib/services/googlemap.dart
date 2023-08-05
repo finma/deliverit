@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/map_config.dart';
-import '/cubit/deliver/deliver_cubit.dart';
 import '/helper/api.dart';
 import '/model/map_address.dart';
 import '/model/place_prediction.dart';
 
 class GoogleMapService {
-  static Future<String> searchCoordinateAddress(
-      Position position, BuildContext context) async {
-    String placeAddress = '';
+  static Future<MapAddress> searchCoordinateAddress(Position position) async {
+    MapAddress address = MapAddress();
     String url =
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey';
 
     var response = await RequestHelper.getRequest(url);
 
     if (response != 'failed') {
-      placeAddress = response['results'][0]['formatted_address'];
+      address.longitude = position.longitude;
+      address.latitude = position.latitude;
+      address.placeName = response['results'][0]['formatted_address'];
+      address.placeFormattedAddress =
+          response['results'][0]['formatted_address'];
 
-      MapAddress userPickupAddress = MapAddress();
-      userPickupAddress.longitude = position.longitude;
-      userPickupAddress.latitude = position.latitude;
-      userPickupAddress.placeName = placeAddress;
-
-      // debugPrint('address: $placeAddress');
-
-      if (context.mounted) {
-        context.read<DeliverCubit>().setPickUpAddress(userPickupAddress);
-      }
+      // debugPrint('address: ${response['results'][0]}');
     }
 
-    return placeAddress;
+    return address;
   }
 
   static Future<List<PlacePrediction>> findPlace(String placeName) async {
@@ -61,7 +53,7 @@ class GoogleMapService {
     return [];
   }
 
-  static Future<void> getPlaceAddressDetails(
+  static Future<MapAddress> getPlaceAddressDetails(
     String placeId,
     BuildContext context,
   ) async {
@@ -69,6 +61,8 @@ class GoogleMapService {
       context: context,
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
+
+    MapAddress dropOffAddress = MapAddress();
 
     String url =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey';
@@ -79,7 +73,6 @@ class GoogleMapService {
 
     if (response != 'failed') {
       if (response['status'] == 'OK') {
-        MapAddress dropOffAddress = MapAddress();
         dropOffAddress.placeName = response['result']['name'];
         dropOffAddress.placeId = placeId;
         dropOffAddress.latitude =
@@ -91,14 +84,12 @@ class GoogleMapService {
 
         if (context.mounted) {
           // debugPrint('place address: ${dropOffAddress.placeName}');
-
-          context.read<DeliverCubit>().setDropOffAddress(dropOffAddress);
+          // context.read<DeliverCubit>().setDropOffAddress(dropOffAddress);
           context.pop();
           context.pop();
         }
-
-        // return placeAddress;
       }
     }
+    return dropOffAddress;
   }
 }
