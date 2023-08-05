@@ -10,4 +10,8 @@ class PlacePredictionCubit extends Cubit<List<PlacePrediction>> {
   void addPlacePredictionList(List<PlacePrediction> value) {
     emit(value);
   }
+
+  void removePlacePredictionList() {
+    emit([]);
+  }
 }
