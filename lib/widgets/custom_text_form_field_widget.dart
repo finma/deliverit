@@ -14,32 +14,38 @@ class PasswordCubit extends Cubit<bool> {
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     Key? key,
-    required this.controller,
-    required this.hintText,
+    this.borderRadius = 12,
+    this.controller,
+    this.hintText,
     this.iconAsset,
     this.icon,
+    this.initialValue,
     this.isDense = true,
+    this.isDisabled = false,
     this.isPassword = false,
     this.maxLines = 1,
-    this.validator,
+    this.onChanged,
+    this.onTap,
     this.paddingVertical = 20,
     this.paddingHorizontal = 16,
-    this.borderRadius = 12,
-    this.onChanged,
+    this.validator,
   }) : super(key: key);
 
-  final TextEditingController controller;
-  final String hintText;
+  final String? hintText;
   final String? iconAsset;
-  final Icon? icon;
+  final String? initialValue;
+  final String? Function(String?)? validator;
   final bool isDense;
   final bool isPassword;
+  final bool isDisabled;
   final int maxLines;
-  final String? Function(String?)? validator;
   final double paddingVertical;
   final double paddingHorizontal;
   final double borderRadius;
+  final Icon? icon;
   final Function(String)? onChanged;
+  final Function()? onTap;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +56,13 @@ class CustomTextFormField extends StatelessWidget {
           return TextFormField(
             controller: controller,
             obscureText: isPassword ? isPasswordHidden : false,
+            initialValue: initialValue,
             validator: validator,
             maxLines: maxLines,
-            textAlign: TextAlign.start,
             onChanged: onChanged,
+            readOnly: isDisabled,
+            onTap: onTap,
+            textAlign: TextAlign.start,
             decoration: InputDecoration(
               isDense: isDense,
               filled: true,
