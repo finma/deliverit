@@ -30,8 +30,9 @@ class _DeliverPageState extends State<DeliverPage> {
   Position? currentLocation;
   var geoLocator = Geolocator();
   SelectCubit bottomPaddingOfMap = SelectCubit(0.0);
+  CameraPosition? myLocation;
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
+  static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(-7.319563, 108.202972),
     zoom: 14.4746,
   );
@@ -39,6 +40,18 @@ class _DeliverPageState extends State<DeliverPage> {
   @override
   Widget build(BuildContext context) {
     MylocationCubit mylocationCubit = context.read<MylocationCubit>();
+
+    // * SET INITIAL CAMERA POSITION
+    if (mylocationCubit.state.position != null) {
+      // debugPrint('my location: ${mylocationCubit.state.position}');
+      myLocation = CameraPosition(
+        target: LatLng(
+          mylocationCubit.state.position!.latitude,
+          mylocationCubit.state.position!.longitude,
+        ),
+        zoom: 16,
+      );
+    }
 
     // * FUNCTION TO GET CURRENT LOCATION
     void locatePosition() async {
@@ -48,7 +61,6 @@ class _DeliverPageState extends State<DeliverPage> {
       // * CHECK LOCATION SERVICE
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        mylocationCubit.notPermission('Location services are disabled');
         return Future.error('Location services are disabled');
       }
 
@@ -57,14 +69,11 @@ class _DeliverPageState extends State<DeliverPage> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          mylocationCubit.notPermission('Location permissions are denied');
           return Future.error('Location permissions are denied');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        mylocationCubit.notPermission(
-            'Location permissions are permanently denied, we cannot request permissions.');
         return Future.error(
             'Location permissions are permanently denied, we cannot request permissions.');
       }
@@ -77,6 +86,7 @@ class _DeliverPageState extends State<DeliverPage> {
 
       // debugPrint('location: $position');
 
+      // * ADD CURRENT LOCATION TO CUBIT
       mylocationCubit.addLocation(position);
 
       // * MOVE CAMERA TO CURRENT LOCATION
@@ -117,7 +127,7 @@ class _DeliverPageState extends State<DeliverPage> {
                   padding: EdgeInsets.only(bottom: bottomPadding),
                   mapType: MapType.normal,
                   myLocationButtonEnabled: true,
-                  initialCameraPosition: _kGooglePlex,
+                  initialCameraPosition: myLocation ?? initialCameraPosition,
                   myLocationEnabled: true,
                   zoomControlsEnabled: true,
                   zoomGesturesEnabled: true,

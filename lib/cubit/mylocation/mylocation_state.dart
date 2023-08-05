@@ -1,17 +1,33 @@
+// part of 'mylocation_cubit.dart';
+
+// abstract class MylocationState {}
+
+// class MylocationInitial extends MylocationState {}
+
+// class MylocationNotPermission extends MylocationState {
+//   MylocationNotPermission(this.message);
+
+//   final String message;
+// }
+
+// class MylocationLoaded extends MylocationState {
+//   MylocationLoaded(this.position);
+
+//   final Position position;
+// }
+
 part of 'mylocation_cubit.dart';
 
-abstract class MylocationState {}
+class MylocationState {
+  final Position? position;
 
-class MylocationInitial extends MylocationState {}
+  MylocationState({this.position});
 
-class MylocationNotPermission extends MylocationState {
-  MylocationNotPermission(this.message);
-
-  final String message;
-}
-
-class MylocationLoaded extends MylocationState {
-  MylocationLoaded(this.position);
-
-  final Position position;
+  MylocationState copyWith({
+    Position? position,
+  }) {
+    return MylocationState(
+      position: position ?? this.position,
+    );
+  }
 }
