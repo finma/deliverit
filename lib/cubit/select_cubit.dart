@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SelectCubit extends Cubit<dynamic> {
-  SelectCubit(dynamic initialValue) : super(initialValue);
+class SelectCubit<T> extends Cubit<T> {
+  SelectCubit(T initialValue) : super(initialValue);
 
-  void setSelectedValue(dynamic value) {
+  void setSelectedValue(T value) {
     emit(value);
   }
 }
