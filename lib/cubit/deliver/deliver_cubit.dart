@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/model/map_address.dart';
@@ -8,6 +9,7 @@ part 'deliver_state.dart';
 class DeliverCubit extends Cubit<DeliverState> {
   DeliverCubit()
       : super(DeliverState(
+          currentPosition: null,
           pickUpAddress: null,
           dropOffAddress: null,
           pLineCoordinates: [],
@@ -15,6 +17,11 @@ class DeliverCubit extends Cubit<DeliverState> {
           markerSet: {},
           circleSet: {},
         ));
+
+  // create void add current location
+  void addCurrentPosition(Position position) {
+    emit(state.copyWith(currentPosition: position));
+  }
 
   void setPickUpAddress(MapAddress address) {
     emit(state.copyWith(pickUpAddress: address));
@@ -56,26 +63,37 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(circleSet: newCircleSet));
   }
 
+  // create void to clear current position
+  void clearCurrentPosition() {
+    emit(state.copyWith(currentPosition: null));
+  }
+
+  // create void to clear pick up address
   void clearPickUpAddress() {
     emit(state.copyWith(pickUpAddress: null));
   }
 
+  // create void to clear drop off address
   void clearDropOffAddress() {
     emit(state.copyWith(dropOffAddress: null));
   }
 
+  // create void to clear is location updated
   void clearPLinesCoordinates() {
     emit(state.copyWith(pLineCoordinates: []));
   }
 
+  // create void to clear polyline set
   void clearPolylineSet() {
     emit(state.copyWith(polylineSet: {}));
   }
 
+  // create void to clear marker set
   void clearMarkerSet() {
     emit(state.copyWith(markerSet: {}));
   }
 
+  // create void to clear circle set
   void clearCircleSet() {
     emit(state.copyWith(circleSet: {}));
   }
