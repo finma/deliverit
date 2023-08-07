@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/cubit/deliver/deliver_cubit.dart';
-import '/cubit/mylocation/mylocation_cubit.dart';
 import '/cubit/navigation_cubit.dart';
 import '/config/app_color.dart';
 import '/routes/router.dart';
@@ -13,7 +12,6 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => NavigationCubit()),
-        BlocProvider(create: (_) => MylocationCubit()),
         BlocProvider(create: (_) => DeliverCubit()),
       ],
       child: const MyApp(),
