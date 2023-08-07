@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
-import '/cubit/mylocation/mylocation_cubit.dart';
 import '/model/map_address.dart';
 import '/routes/router.dart';
 import '/services/googlemap.dart';
@@ -34,7 +33,7 @@ class _DeliverPageState extends State<DeliverPage> {
 
   // * CURRENT LOCATION
   Position? currentLocation;
-  var geoLocator = Geolocator();
+  Geolocator geoLocator = Geolocator();
   CameraPosition? myLocation;
 
   static const CameraPosition initialCameraPosition = CameraPosition(
@@ -44,16 +43,14 @@ class _DeliverPageState extends State<DeliverPage> {
 
   @override
   Widget build(BuildContext context) {
-    MylocationCubit mylocationCubit = context.read<MylocationCubit>();
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
 
     // * SET INITIAL CAMERA POSITION
-    if (mylocationCubit.state.position != null) {
-      // debugPrint('my location: ${mylocationCubit.state.position}');
+    if (deliverCubit.state.currentPosition != null) {
       myLocation = CameraPosition(
         target: LatLng(
-          mylocationCubit.state.position!.latitude,
-          mylocationCubit.state.position!.longitude,
+          deliverCubit.state.currentPosition!.latitude,
+          deliverCubit.state.currentPosition!.longitude,
         ),
         zoom: 16,
       );
@@ -92,9 +89,6 @@ class _DeliverPageState extends State<DeliverPage> {
 
       // debugPrint('location: $position');
 
-      // * ADD CURRENT LOCATION TO CUBIT
-      mylocationCubit.addLocation(position);
-
       // * MOVE CAMERA TO CURRENT LOCATION
       LatLng latlngPosition = LatLng(position.latitude, position.longitude);
 
@@ -108,12 +102,13 @@ class _DeliverPageState extends State<DeliverPage> {
         MapAddress address =
             await GoogleMapService.searchCoordinateAddress(position);
 
-        // * ADD CURRENT ADDRESS TO CUBIT
+        // * ADD CURRENT ADDRESS AND POSITION TO CUBIT
         deliverCubit.setPickUpAddress(address);
+        deliverCubit.addCurrentPosition(position);
       }
     }
 
-    debugPrint('BUILD PAGE');
+    // debugPrint('BUILD PAGE');
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -135,6 +130,11 @@ class _DeliverPageState extends State<DeliverPage> {
             BlocBuilder<DeliverCubit, DeliverState>(
               builder: (context, state) {
                 // debugPrint('GOOGLE MAP');
+                //* GET CURRENT LOCATION
+                if (state.pickUpAddress == null) {
+                  locatePosition();
+                }
+
                 //* GET DIRECTION
                 if (state.isLocationUpdated &&
                     state.isObtainDirection == true) {
@@ -158,9 +158,6 @@ class _DeliverPageState extends State<DeliverPage> {
                   onMapCreated: (controller) {
                     _controllerGoogleMap.complete(controller);
                     newGoogleMapController = controller;
-
-                    // * GET CURRENT LOCATION
-                    locatePosition();
                   },
                 );
               },
