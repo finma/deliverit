@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:deliverit/cubit/select_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -35,6 +37,12 @@ class _DeliverPageState extends State<DeliverPage> {
   Position? currentLocation;
   var geoLocator = Geolocator();
   CameraPosition? myLocation;
+  SelectCubit<bool> isDirectionObtained = SelectCubit(false);
+
+  List<LatLng> pLineCoordinates = [];
+  Set<Polyline> polylineSet = {};
+  Set<Marker> markerSet = {};
+  Set<Circle> circleSet = {};
 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(-7.319563, 108.202972),
@@ -110,6 +118,8 @@ class _DeliverPageState extends State<DeliverPage> {
       }
     }
 
+    debugPrint('BUILD PAGE');
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         mini: true,
@@ -129,9 +139,12 @@ class _DeliverPageState extends State<DeliverPage> {
             // * GOOGLE MAP
             BlocBuilder<DeliverCubit, DeliverState>(
               builder: (context, state) {
-                if (state.isObtainDirection == true) {
+                debugPrint('GOOGLE MAP');
+                if (!isDirectionObtained.state &&
+                    state.isObtainDirection == true) {
                   debugPrint('obtain direction');
                   getPlaceDirection();
+                  isDirectionObtained.setSelectedValue(true);
                 }
                 return GoogleMap(
                   padding: const EdgeInsets.only(bottom: 200),
@@ -142,6 +155,9 @@ class _DeliverPageState extends State<DeliverPage> {
                   zoomControlsEnabled: true,
                   zoomGesturesEnabled: true,
                   compassEnabled: true,
+                  polylines: polylineSet,
+                  markers: markerSet,
+                  circles: circleSet,
                   onMapCreated: (controller) {
                     _controllerGoogleMap.complete(controller);
                     newGoogleMapController = controller;
@@ -242,5 +258,106 @@ class _DeliverPageState extends State<DeliverPage> {
         pickUpLatLng, dropOffLatLng);
 
     debugPrint('encoded points: ${details.encodedPoints}');
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolylinePointsResult =
+        polylinePoints.decodePolyline(details.encodedPoints!);
+
+    pLineCoordinates.clear();
+
+    if (decodedPolylinePointsResult.isNotEmpty) {
+      for (var pointLatLng in decodedPolylinePointsResult) {
+        pLineCoordinates
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      }
+    }
+
+    polylineSet.clear();
+
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: const PolylineId('polylineId'),
+        color: AppColor.primary,
+        jointType: JointType.round,
+        points: pLineCoordinates,
+        width: 5,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+
+      polylineSet.add(polyline);
+    });
+
+    LatLngBounds latLngBounds;
+    if (pickUpLatLng.latitude > dropOffLatLng.latitude &&
+        pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds =
+          LatLngBounds(southwest: dropOffLatLng, northeast: pickUpLatLng);
+    } else if (pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+        northeast: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+      );
+    } else if (pickUpLatLng.latitude > dropOffLatLng.latitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+        northeast: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+      );
+    } else {
+      latLngBounds =
+          LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLng);
+    }
+
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
+
+    Marker pickUpMarker = Marker(
+      markerId: const MarkerId('pickUpId'),
+      position: pickUpLatLng,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(
+        title: 'Lokasi Pengambilan Barang',
+        snippet: initialPos.placeName,
+      ),
+    );
+
+    Marker dropOffMarker = Marker(
+      markerId: const MarkerId('dropOffId'),
+      position: dropOffLatLng,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(
+        title: 'Lokasi Tujuan Barang',
+        snippet: finalPos.placeName,
+      ),
+    );
+
+    setState(() {
+      markerSet.add(pickUpMarker);
+      markerSet.add(dropOffMarker);
+    });
+
+    Circle pickUpCircle = Circle(
+      circleId: const CircleId('pickUpId'),
+      fillColor: AppColor.primary,
+      center: pickUpLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: AppColor.primary,
+    );
+
+    Circle dropOffCircle = Circle(
+      circleId: const CircleId('dropOffId'),
+      fillColor: AppColor.primary,
+      center: dropOffLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: AppColor.primary,
+    );
+
+    setState(() {
+      circleSet.add(pickUpCircle);
+      circleSet.add(dropOffCircle);
+    });
   }
 }
