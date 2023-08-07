@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:deliverit/cubit/select_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -37,12 +36,6 @@ class _DeliverPageState extends State<DeliverPage> {
   Position? currentLocation;
   var geoLocator = Geolocator();
   CameraPosition? myLocation;
-  SelectCubit<bool> isDirectionObtained = SelectCubit(false);
-
-  List<LatLng> pLineCoordinates = [];
-  Set<Polyline> polylineSet = {};
-  Set<Marker> markerSet = {};
-  Set<Circle> circleSet = {};
 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(-7.319563, 108.202972),
@@ -114,6 +107,8 @@ class _DeliverPageState extends State<DeliverPage> {
       if (context.mounted) {
         MapAddress address =
             await GoogleMapService.searchCoordinateAddress(position);
+
+        // * ADD CURRENT ADDRESS TO CUBIT
         deliverCubit.setPickUpAddress(address);
       }
     }
@@ -139,13 +134,15 @@ class _DeliverPageState extends State<DeliverPage> {
             // * GOOGLE MAP
             BlocBuilder<DeliverCubit, DeliverState>(
               builder: (context, state) {
-                debugPrint('GOOGLE MAP');
-                if (!isDirectionObtained.state &&
+                // debugPrint('GOOGLE MAP');
+                //* GET DIRECTION
+                if (state.isLocationUpdated &&
                     state.isObtainDirection == true) {
-                  debugPrint('obtain direction');
+                  // debugPrint('obtain direction');
                   getPlaceDirection();
-                  isDirectionObtained.setSelectedValue(true);
+                  context.read<DeliverCubit>().setIsLocationUpdated(false);
                 }
+
                 return GoogleMap(
                   padding: const EdgeInsets.only(bottom: 200),
                   mapType: MapType.normal,
@@ -155,9 +152,9 @@ class _DeliverPageState extends State<DeliverPage> {
                   zoomControlsEnabled: true,
                   zoomGesturesEnabled: true,
                   compassEnabled: true,
-                  polylines: polylineSet,
-                  markers: markerSet,
-                  circles: circleSet,
+                  polylines: state.polylineSet,
+                  markers: state.markerSet,
+                  circles: state.circleSet,
                   onMapCreated: (controller) {
                     _controllerGoogleMap.complete(controller);
                     newGoogleMapController = controller;
@@ -248,47 +245,50 @@ class _DeliverPageState extends State<DeliverPage> {
   }
 
   Future<void> getPlaceDirection() async {
-    var initialPos = context.read<DeliverCubit>().state.pickUpAddress;
-    var finalPos = context.read<DeliverCubit>().state.dropOffAddress;
+    // * GET PICK UP AND DROP OFF ADDRESS
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+    MapAddress? initialPos = deliverCubit.state.pickUpAddress;
+    MapAddress? finalPos = deliverCubit.state.dropOffAddress;
 
-    var pickUpLatLng = LatLng(initialPos!.latitude!, initialPos.longitude!);
-    var dropOffLatLng = LatLng(finalPos!.latitude!, finalPos.longitude!);
+    LatLng pickUpLatLng = LatLng(initialPos!.latitude!, initialPos.longitude!);
+    LatLng dropOffLatLng = LatLng(finalPos!.latitude!, finalPos.longitude!);
 
+    //* GET DIRECTION DETAILS
     var details = await GoogleMapService.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
 
-    debugPrint('encoded points: ${details.encodedPoints}');
+    // debugPrint('encoded points: ${details.encodedPoints}');
 
+    // * DECODE POLYLINE POINTS
     PolylinePoints polylinePoints = PolylinePoints();
     List<PointLatLng> decodedPolylinePointsResult =
         polylinePoints.decodePolyline(details.encodedPoints!);
 
-    pLineCoordinates.clear();
-
+    // * ADD DECODED POLYLINE POINTS TO ARRAY
+    deliverCubit.clearPLinesCoordinates();
     if (decodedPolylinePointsResult.isNotEmpty) {
       for (var pointLatLng in decodedPolylinePointsResult) {
-        pLineCoordinates
-            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+        deliverCubit.addPLineCoordinates(
+            LatLng(pointLatLng.latitude, pointLatLng.longitude));
       }
     }
 
-    polylineSet.clear();
+    // * CREATE POLYLINE
+    deliverCubit.clearPolylineSet();
+    Polyline polyline = Polyline(
+      polylineId: const PolylineId('polylineId'),
+      color: AppColor.primary,
+      jointType: JointType.round,
+      points: deliverCubit.state.pLineCoordinates,
+      width: 5,
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
+      geodesic: true,
+    );
 
-    setState(() {
-      Polyline polyline = Polyline(
-        polylineId: const PolylineId('polylineId'),
-        color: AppColor.primary,
-        jointType: JointType.round,
-        points: pLineCoordinates,
-        width: 5,
-        startCap: Cap.roundCap,
-        endCap: Cap.roundCap,
-        geodesic: true,
-      );
+    deliverCubit.addPolyline(polyline);
 
-      polylineSet.add(polyline);
-    });
-
+    // * CREATE BOUND LATLNG TO FIT TWO MARKERS
     LatLngBounds latLngBounds;
     if (pickUpLatLng.latitude > dropOffLatLng.latitude &&
         pickUpLatLng.longitude > dropOffLatLng.longitude) {
@@ -309,9 +309,11 @@ class _DeliverPageState extends State<DeliverPage> {
           LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLng);
     }
 
+    // * MOVE CAMERA TO FIT TWO MARKERS
     newGoogleMapController
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
 
+    // * CREATE MARKER
     Marker pickUpMarker = Marker(
       markerId: const MarkerId('pickUpId'),
       position: pickUpLatLng,
@@ -332,11 +334,10 @@ class _DeliverPageState extends State<DeliverPage> {
       ),
     );
 
-    setState(() {
-      markerSet.add(pickUpMarker);
-      markerSet.add(dropOffMarker);
-    });
+    deliverCubit.addMarker(pickUpMarker);
+    deliverCubit.addMarker(dropOffMarker);
 
+    // * CREATE CIRCLE
     Circle pickUpCircle = Circle(
       circleId: const CircleId('pickUpId'),
       fillColor: AppColor.primary,
@@ -355,9 +356,7 @@ class _DeliverPageState extends State<DeliverPage> {
       strokeColor: AppColor.primary,
     );
 
-    setState(() {
-      circleSet.add(pickUpCircle);
-      circleSet.add(dropOffCircle);
-    });
+    deliverCubit.addCircle(pickUpCircle);
+    deliverCubit.addCircle(dropOffCircle);
   }
 }

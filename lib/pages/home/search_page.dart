@@ -156,6 +156,8 @@ class PredictionTile extends StatelessWidget {
           deliverCubit.setDropOffAddress(address);
         }
 
+        deliverCubit.setIsLocationUpdated(true);
+
         placePrediction.removePlacePredictionList();
       },
       child: Container(
