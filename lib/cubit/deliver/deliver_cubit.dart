@@ -97,4 +97,9 @@ class DeliverCubit extends Cubit<DeliverState> {
   void clearCircleSet() {
     emit(state.copyWith(circleSet: {}));
   }
+
+  // create void to clear all state
+  void clearState() {
+    emit(DeliverState());
+  }
 }
