@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:deliverit/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -249,7 +250,23 @@ class _DeliverPageState extends State<DeliverPage> {
                                 onTap: () => context.goNamed(Routes.searchPage),
                               );
                             },
-                          )
+                          ),
+                          const SizedBox(height: 16),
+                          BlocBuilder<DeliverCubit, DeliverState>(
+                            builder: (context, state) {
+                              if (state.isObtainDirection == true) {
+                                return ButtonCustom(
+                                  label: 'Lanjutkan',
+                                  onTap: () {
+                                    context.goNamed(Routes.deliveryDetail);
+                                  },
+                                  type: ButtonType.secondary,
+                                );
+                              }
+
+                              return const SizedBox();
+                            },
+                          ),
                         ],
                       )
                     ],
