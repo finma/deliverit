@@ -111,16 +111,30 @@ class _DeliverPageState extends State<DeliverPage> {
     // debugPrint('BUILD PAGE');
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        mini: true,
-        backgroundColor: Colors.white,
-        onPressed: () {
-          context.pop();
+      floatingActionButton: BlocBuilder<DeliverCubit, DeliverState>(
+        builder: (context, state) {
+          // debugPrint('BUILD FAB : ${state.toJson()}');
+          return FloatingActionButton(
+            mini: true,
+            backgroundColor: Colors.white,
+            onPressed: () {
+              if (state.isObtainDirection == true) {
+                context.read<DeliverCubit>().clearState();
+              } else {
+                context.pop();
+              }
+            },
+            child: state.isObtainDirection == true
+                ? const Icon(
+                    Icons.close_rounded,
+                    color: AppColor.primary,
+                  )
+                : const Icon(
+                    Icons.arrow_back_rounded,
+                    color: AppColor.primary,
+                  ),
+          );
         },
-        child: const Icon(
-          Icons.arrow_back_rounded,
-          color: AppColor.primary,
-        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       body: SafeArea(
@@ -194,10 +208,9 @@ class _DeliverPageState extends State<DeliverPage> {
                       children: [
                         BlocBuilder<DeliverCubit, DeliverState>(
                           builder: (context, state) {
-                            if (deliverCubit.state.pickUpAddress != null) {
-                              pickUpController.text =
-                                  deliverCubit.state.pickUpAddress!.placeName!;
-                            }
+                            //* SET PICK UP ADDRESS
+                            pickUpController.text =
+                                state.pickUpAddress?.placeName ?? '';
 
                             return CustomTextFormField(
                               controller: pickUpController,
@@ -213,10 +226,9 @@ class _DeliverPageState extends State<DeliverPage> {
                         const SizedBox(height: 16),
                         BlocBuilder<DeliverCubit, DeliverState>(
                           builder: (context, state) {
-                            if (state.dropOffAddress != null) {
-                              dropOffController.text =
-                                  state.dropOffAddress!.placeName!;
-                            }
+                            // * SET DROP OFF ADDRESS
+                            dropOffController.text =
+                                state.dropOffAddress?.placeName ?? '';
 
                             return CustomTextFormField(
                               controller: dropOffController,
