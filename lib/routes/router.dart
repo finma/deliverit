@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '/model/address.dart';
 
 import '/pages/home/deliver_page.dart';
+import '/pages/home/delivery_detail_page.dart';
 import '/pages/home/home_page.dart';
 import '/pages/home/search_page.dart';
 import '/pages/login_page.dart';
@@ -41,6 +42,11 @@ final router = GoRouter(
               path: 'search',
               name: Routes.searchPage,
               builder: (context, state) => SearchPage(),
+            ),
+            GoRoute(
+              path: 'delivery-detail',
+              name: Routes.deliveryDetail,
+              builder: (context, state) => const DeliveryDetailPage(),
             )
           ],
         ),
