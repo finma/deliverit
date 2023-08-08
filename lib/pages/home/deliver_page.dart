@@ -110,144 +110,154 @@ class _DeliverPageState extends State<DeliverPage> {
 
     // debugPrint('BUILD PAGE');
 
-    return Scaffold(
-      floatingActionButton: BlocBuilder<DeliverCubit, DeliverState>(
-        builder: (context, state) {
-          // debugPrint('BUILD FAB : ${state.toJson()}');
-          return FloatingActionButton(
-            mini: true,
-            backgroundColor: Colors.white,
-            onPressed: () {
-              if (state.isObtainDirection == true) {
-                context.read<DeliverCubit>().clearState();
-              } else {
-                context.pop();
-              }
-            },
-            child: state.isObtainDirection == true
-                ? const Icon(
-                    Icons.close_rounded,
-                    color: AppColor.primary,
-                  )
-                : const Icon(
-                    Icons.arrow_back_rounded,
-                    color: AppColor.primary,
-                  ),
-          );
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // * GOOGLE MAP
-            BlocBuilder<DeliverCubit, DeliverState>(
-              builder: (context, state) {
-                // debugPrint('GOOGLE MAP');
-                //* GET CURRENT LOCATION
-                if (state.pickUpAddress == null) {
-                  locatePosition();
-                }
+    return WillPopScope(
+      onWillPop: () {
+        //* CLEAR STATE IF OBTAIN DIRECTION ON BACK PRESSED
+        if (deliverCubit.state.isObtainDirection == true) {
+          deliverCubit.clearState();
+        }
 
-                //* GET DIRECTION
-                if (state.isLocationUpdated &&
-                    state.isObtainDirection == true) {
-                  // debugPrint('obtain direction');
-                  getPlaceDirection();
-                  context.read<DeliverCubit>().setIsLocationUpdated(false);
+        return Future.value(true);
+      },
+      child: Scaffold(
+        floatingActionButton: BlocBuilder<DeliverCubit, DeliverState>(
+          builder: (context, state) {
+            // debugPrint('BUILD FAB : ${state.toJson()}');
+            return FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.white,
+              onPressed: () {
+                if (state.isObtainDirection == true) {
+                  context.read<DeliverCubit>().clearState();
+                } else {
+                  context.pop();
                 }
-
-                return GoogleMap(
-                  padding: const EdgeInsets.only(bottom: 200),
-                  mapType: MapType.normal,
-                  myLocationButtonEnabled: true,
-                  initialCameraPosition: myLocation ?? initialCameraPosition,
-                  myLocationEnabled: true,
-                  zoomControlsEnabled: true,
-                  zoomGesturesEnabled: true,
-                  compassEnabled: true,
-                  polylines: state.polylineSet,
-                  markers: state.markerSet,
-                  circles: state.circleSet,
-                  onMapCreated: (controller) {
-                    _controllerGoogleMap.complete(controller);
-                    newGoogleMapController = controller;
-                  },
-                );
               },
-            ),
+              child: state.isObtainDirection == true
+                  ? const Icon(
+                      Icons.close_rounded,
+                      color: AppColor.primary,
+                    )
+                  : const Icon(
+                      Icons.arrow_back_rounded,
+                      color: AppColor.primary,
+                    ),
+            );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              // * GOOGLE MAP
+              BlocBuilder<DeliverCubit, DeliverState>(
+                builder: (context, state) {
+                  // debugPrint('GOOGLE MAP');
+                  //* GET CURRENT LOCATION
+                  if (state.pickUpAddress == null) {
+                    locatePosition();
+                  }
 
-            // * SEARCH BAR
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  color: AppColor.primary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                  //* GET DIRECTION
+                  if (state.isLocationUpdated &&
+                      state.isObtainDirection == true) {
+                    // debugPrint('obtain direction');
+                    getPlaceDirection();
+                    context.read<DeliverCubit>().setIsLocationUpdated(false);
+                  }
+
+                  return GoogleMap(
+                    padding: const EdgeInsets.only(bottom: 200),
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: true,
+                    initialCameraPosition: myLocation ?? initialCameraPosition,
+                    myLocationEnabled: true,
+                    zoomControlsEnabled: true,
+                    zoomGesturesEnabled: true,
+                    compassEnabled: true,
+                    polylines: state.polylineSet,
+                    markers: state.markerSet,
+                    circles: state.circleSet,
+                    onMapCreated: (controller) {
+                      _controllerGoogleMap.complete(controller);
+                      newGoogleMapController = controller;
+                    },
+                  );
+                },
+              ),
+
+              // * SEARCH BAR
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: const BoxDecoration(
+                    color: AppColor.primary,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Mau kirim barang kemana?',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Column(
+                        children: [
+                          BlocBuilder<DeliverCubit, DeliverState>(
+                            builder: (context, state) {
+                              //* SET PICK UP ADDRESS
+                              pickUpController.text =
+                                  state.pickUpAddress?.placeName ?? '';
+
+                              return CustomTextFormField(
+                                controller: pickUpController,
+                                iconAsset: AppAsset.iconLocation,
+                                hintText: 'Lokasi Pengambilan Barang',
+                                paddingVertical: 8,
+                                borderRadius: 100,
+                                isDisabled: true,
+                                onTap: () => context.goNamed(Routes.searchPage),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          BlocBuilder<DeliverCubit, DeliverState>(
+                            builder: (context, state) {
+                              // * SET DROP OFF ADDRESS
+                              dropOffController.text =
+                                  state.dropOffAddress?.placeName ?? '';
+
+                              return CustomTextFormField(
+                                controller: dropOffController,
+                                iconAsset: AppAsset.iconLocation,
+                                hintText: 'Lokasi Tujuan Barang',
+                                paddingVertical: 8,
+                                borderRadius: 100,
+                                isDisabled: true,
+                                onTap: () => context.goNamed(Routes.searchPage),
+                              );
+                            },
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Mau kirim barang kemana?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Column(
-                      children: [
-                        BlocBuilder<DeliverCubit, DeliverState>(
-                          builder: (context, state) {
-                            //* SET PICK UP ADDRESS
-                            pickUpController.text =
-                                state.pickUpAddress?.placeName ?? '';
-
-                            return CustomTextFormField(
-                              controller: pickUpController,
-                              iconAsset: AppAsset.iconLocation,
-                              hintText: 'Lokasi Pengambilan Barang',
-                              paddingVertical: 8,
-                              borderRadius: 100,
-                              isDisabled: true,
-                              onTap: () => context.goNamed(Routes.searchPage),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        BlocBuilder<DeliverCubit, DeliverState>(
-                          builder: (context, state) {
-                            // * SET DROP OFF ADDRESS
-                            dropOffController.text =
-                                state.dropOffAddress?.placeName ?? '';
-
-                            return CustomTextFormField(
-                              controller: dropOffController,
-                              iconAsset: AppAsset.iconLocation,
-                              hintText: 'Lokasi Tujuan Barang',
-                              paddingVertical: 8,
-                              borderRadius: 100,
-                              isDisabled: true,
-                              onTap: () => context.goNamed(Routes.searchPage),
-                            );
-                          },
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
