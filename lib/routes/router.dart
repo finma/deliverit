@@ -46,7 +46,7 @@ final router = GoRouter(
             GoRoute(
               path: 'delivery-detail',
               name: Routes.deliveryDetail,
-              builder: (context, state) => const DeliveryDetailPage(),
+              builder: (context, state) => DeliveryDetailPage(),
             )
           ],
         ),
