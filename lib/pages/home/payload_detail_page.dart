@@ -1,8 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/cubit/select_cubit.dart';
 import '/data/payload.dart';
 import '/model/payload.dart';
 import '/widgets/custom_button_widget.dart';
@@ -11,6 +14,12 @@ class PayloadDetailPage extends StatelessWidget {
   PayloadDetailPage({Key? key}) : super(key: key);
 
   final List<Payload> defaultPayloads = DataPayload.all;
+
+  final TextEditingController payloadNameController = TextEditingController();
+  final SelectCubit<String> selectSize = SelectCubit('');
+  final List<String> sizeOptions = ['kecil', 'sedang', 'besar'];
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +42,7 @@ class PayloadDetailPage extends StatelessWidget {
             Stack(
               children: [
                 _buildGuidelineCard(context),
-                _buildCargoDescriptionCard(),
+                _buildCargoDescriptionCard(context),
               ],
             ),
             const SizedBox(height: 40),
@@ -61,7 +70,8 @@ class PayloadDetailPage extends StatelessWidget {
           runSpacing: 8,
           children: defaultPayloads
               .map((payload) => RawChip(
-                    label: Text('${payload.name} (${payload.size})'),
+                    label: Text(
+                        '${payload.name} (${Payload.sizeToString(payload.size)})'),
                     backgroundColor: Colors.white,
                     side: const BorderSide(
                       color: Colors.black,
@@ -184,7 +194,7 @@ class PayloadDetailPage extends StatelessWidget {
   }
 
   // Widget for displaying the cargo description card
-  Widget _buildCargoDescriptionCard() {
+  Widget _buildCargoDescriptionCard(BuildContext context) {
     return Container(
       height: 215,
       padding: const EdgeInsets.all(18),
@@ -219,10 +229,153 @@ class PayloadDetailPage extends StatelessWidget {
             isExpanded: false,
             onTap: () {
               debugPrint('menambahkan barang');
+              openDialog(context);
             },
           ),
         ],
       ),
     );
   }
+
+  Future openDialog(BuildContext context) => showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Tambah Barang',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            titlePadding: const EdgeInsets.symmetric(vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  payloadNameController.clear();
+                  selectSize.setSelectedValue('');
+                  context.pop();
+                },
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    final payload = Payload(
+                      name: payloadNameController.text,
+                      size: Payload.stringToSize(selectSize.state),
+                    );
+
+                    //TODO: store to state
+                    debugPrint('${payload.toJson()}');
+                    payloadNameController.clear();
+                    selectSize.setSelectedValue('');
+                    context.pop();
+                  }
+                },
+                child: const Text('Tambahkan'),
+              )
+            ],
+            content: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // * INPUT NAMA BARANG
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Nama Barang',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextFormField(
+                          controller: payloadNameController,
+                          autofocus: true,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Nama barang tidak boleh kosong';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Masukan nama barang',
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // * INPUT UKURAN BARANG
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'Ukuran Barang',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      BlocBuilder<SelectCubit<String>, String>(
+                        bloc: selectSize,
+                        builder: (context, state) {
+                          // debugPrint('state $state');
+                          return DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              value: state.length > 1 ? state : null,
+                              alignment: Alignment.centerLeft,
+                              hint: Text(
+                                'Pilih ukuran barang',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                selectSize.setSelectedValue(value as String);
+                              },
+                              items: sizeOptions
+                                  .map((String item) => DropdownMenuItem(
+                                        value: item,
+                                        child: Text(item),
+                                      ))
+                                  .toList(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
 }
