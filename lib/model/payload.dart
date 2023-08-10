@@ -1,6 +1,8 @@
+enum PayloadSize { small, medium, large }
+
 class Payload {
   String name;
-  String size;
+  PayloadSize size;
   int qty;
 
   Payload({
@@ -20,4 +22,30 @@ class Payload {
         "size": size,
         "qty": qty,
       };
+
+  static String sizeToString(PayloadSize size) {
+    switch (size) {
+      case PayloadSize.small:
+        return 'kecil';
+      case PayloadSize.medium:
+        return 'sedang';
+      case PayloadSize.large:
+        return 'besar';
+      default:
+        throw Exception('Invalid payload size: $size');
+    }
+  }
+
+  static PayloadSize stringToSize(String size) {
+    switch (size) {
+      case 'kecil':
+        return PayloadSize.small;
+      case 'sedang':
+        return PayloadSize.medium;
+      case 'besar':
+        return PayloadSize.large;
+      default:
+        throw Exception('Invalid payload size: $size');
+    }
+  }
 }
