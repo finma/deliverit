@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 
 import '/config/app_color.dart';
 import '/cubit/switch_cubit.dart';
+import '/cubit/deliver/deliver_cubit.dart';
+import '/model/user_delivery.dart';
 import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
   DeliveryDetailPage({super.key});
 
   final TextEditingController nameController1 = TextEditingController();
-  final TextEditingController noHPController1 = TextEditingController();
+  final TextEditingController phoneNumberController1 = TextEditingController();
   final TextEditingController noteController1 = TextEditingController();
 
   final TextEditingController nameController2 = TextEditingController();
-  final TextEditingController noHPController2 = TextEditingController();
+  final TextEditingController phoneNumberController2 = TextEditingController();
   final TextEditingController noteController2 = TextEditingController();
 
   final _formSenderKey = GlobalKey<FormState>();
@@ -20,6 +22,8 @@ class DeliveryDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -41,32 +45,52 @@ class DeliveryDetailPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
+                      // * FORM PENGIRIM
                       FormDetail(
                         formKey: _formSenderKey,
                         title: 'Pengirim Barang',
                         nameController: nameController1,
-                        noHPController: noHPController1,
+                        phoneNumberController: phoneNumberController1,
                         noteController: noteController1,
                       ),
                       const SizedBox(height: 32),
+
+                      // * FORM PENERIMA
                       FormDetail(
                         formKey: _formReceiverKey,
                         title: 'Penerima Barang',
                         isReceiver: true,
                         nameController: nameController2,
-                        noHPController: noHPController2,
+                        phoneNumberController: phoneNumberController2,
                         noteController: noteController2,
                         senderName: nameController1.text,
-                        senderNoHP: noHPController1.text,
+                        senderphoneNumber: phoneNumberController1.text,
                         senderNote: noteController1.text,
                       ),
                       const SizedBox(height: 32),
+
+                      // * BUTTON LANJUTKAN
                       ButtonCustom(
                         label: 'LANJUTKAN',
                         onTap: () {
+                          // debugPrint('${deliverCubit.state.toJson()}');
                           if (_formSenderKey.currentState!.validate() &&
                               _formReceiverKey.currentState!.validate()) {
-                            //TODO: save data to cubit
+                            UserDelivery sender = UserDelivery(
+                              name: nameController1.text,
+                              phoneNumber: phoneNumberController1.text,
+                              note: noteController1.text,
+                            );
+
+                            UserDelivery receiver = UserDelivery(
+                              name: nameController2.text,
+                              phoneNumber: phoneNumberController2.text,
+                              note: noteController2.text,
+                            );
+
+                            deliverCubit.addSender(sender);
+                            deliverCubit.addReceiver(receiver);
+                            // debugPrint('${deliverCubit.state.toJson()}');
                           }
                         },
                       ),
@@ -88,10 +112,10 @@ class FormDetail extends StatelessWidget {
     required GlobalKey<FormState> formKey,
     required this.title,
     required this.nameController,
-    required this.noHPController,
+    required this.phoneNumberController,
     required this.noteController,
     this.senderName,
-    this.senderNoHP,
+    this.senderphoneNumber,
     this.senderNote,
     this.isReceiver = false,
   }) : _formKey = formKey;
@@ -99,10 +123,10 @@ class FormDetail extends StatelessWidget {
   final GlobalKey<FormState> _formKey;
   final String title;
   final TextEditingController nameController;
-  final TextEditingController noHPController;
+  final TextEditingController phoneNumberController;
   final TextEditingController noteController;
   final String? senderName;
-  final String? senderNoHP;
+  final String? senderphoneNumber;
   final String? senderNote;
   final bool isReceiver;
 
@@ -133,12 +157,10 @@ class FormDetail extends StatelessWidget {
                       _switchCubit.toggleSwitch();
                       if (value) {
                         nameController.text = senderName ?? '';
-                        noHPController.text = senderNoHP ?? '';
-                        noteController.text = senderNote ?? '';
+                        phoneNumberController.text = senderphoneNumber ?? '';
                       } else {
                         nameController.text = '';
-                        noHPController.text = '';
-                        noteController.text = '';
+                        phoneNumberController.text = '';
                       }
                     },
                   );
@@ -193,7 +215,7 @@ class FormDetail extends StatelessWidget {
                 ),
               ),
               TextFormField(
-                controller: noHPController,
+                controller: phoneNumberController,
                 keyboardType: TextInputType.phone,
                 style: const TextStyle(
                   fontSize: 16,
