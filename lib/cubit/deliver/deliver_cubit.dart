@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:deliverit/model/user_delivery.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -63,6 +64,16 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(circleSet: newCircleSet));
   }
 
+  // create void to add sender
+  void addSender(UserDelivery sender) {
+    emit(state.copyWith(sender: sender));
+  }
+
+  // create void to add receiver
+  void addReceiver(UserDelivery receiver) {
+    emit(state.copyWith(receiver: receiver));
+  }
+
   // create void to clear current position
   void clearCurrentPosition() {
     emit(state.copyWith(currentPosition: null));
@@ -96,6 +107,16 @@ class DeliverCubit extends Cubit<DeliverState> {
   // create void to clear circle set
   void clearCircleSet() {
     emit(state.copyWith(circleSet: {}));
+  }
+
+  // create void to clear sender
+  void clearSender() {
+    emit(state.copyWith(sender: null));
+  }
+
+  // create void to clear receiver
+  void clearReceiver() {
+    emit(state.copyWith(receiver: null));
   }
 
   // create void to clear all state

@@ -10,11 +10,15 @@ class DeliverState {
   final Set<Marker> markerSet;
   final Set<Circle> circleSet;
   final Position? currentPosition;
+  final UserDelivery? sender;
+  final UserDelivery? receiver;
 
   DeliverState({
     this.pickUpAddress,
     this.dropOffAddress,
     this.currentPosition,
+    this.sender,
+    this.receiver,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
     Set<Polyline>? polylineSet,
@@ -36,6 +40,8 @@ class DeliverState {
     Set<Marker>? markerSet,
     Set<Circle>? circleSet,
     Position? currentPosition,
+    UserDelivery? sender,
+    UserDelivery? receiver,
   }) {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
@@ -46,6 +52,8 @@ class DeliverState {
       markerSet: markerSet ?? this.markerSet,
       circleSet: circleSet ?? this.circleSet,
       currentPosition: currentPosition ?? this.currentPosition,
+      sender: sender ?? this.sender,
+      receiver: receiver ?? this.receiver,
     );
   }
 
@@ -56,10 +64,12 @@ class DeliverState {
       'dropOffAddress': dropOffAddress?.toJson(),
       'currentPosition': currentPosition?.toJson(),
       'isLocationUpdated': isLocationUpdated,
-      'pLineCoordinates': pLineCoordinates.map((e) => e.toJson()).toList(),
-      'polylineSet': polylineSet.map((e) => e.toJson()).toList(),
-      'markerSet': markerSet.map((e) => e.toJson()).toList(),
-      'circleSet': circleSet.map((e) => e.toJson()).toList(),
+      // 'pLineCoordinates': pLineCoordinates.map((e) => e.toJson()).toList(),
+      // 'polylineSet': polylineSet.map((e) => e.toJson()).toList(),
+      // 'markerSet': markerSet.map((e) => e.toJson()).toList(),
+      // 'circleSet': circleSet.map((e) => e.toJson()).toList(),
+      'sender': sender?.toJson(),
+      'receiver': receiver?.toJson(),
     };
   }
 }
