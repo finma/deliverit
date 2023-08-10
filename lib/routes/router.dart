@@ -52,7 +52,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'payload-detail',
                   name: Routes.payloadDetail,
-                  builder: (context, state) => const PayloadDetailPage(),
+                  builder: (context, state) => PayloadDetailPage(),
                 ),
               ],
             )
