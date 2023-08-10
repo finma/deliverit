@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:deliverit/model/user_delivery.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/model/map_address.dart';
+import '/model/user_delivery.dart';
 
 part 'deliver_state.dart';
 
@@ -13,6 +13,8 @@ class DeliverCubit extends Cubit<DeliverState> {
           currentPosition: null,
           pickUpAddress: null,
           dropOffAddress: null,
+          sender: null,
+          receiver: null,
           pLineCoordinates: [],
           polylineSet: {},
           markerSet: {},
