@@ -3,10 +3,14 @@ import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/data/payload.dart';
+import '/model/payload.dart';
 import '/widgets/custom_button_widget.dart';
 
 class PayloadDetailPage extends StatelessWidget {
-  const PayloadDetailPage({Key? key}) : super(key: key);
+  PayloadDetailPage({Key? key}) : super(key: key);
+
+  final List<Payload> defaultPayloads = DataPayload.all;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,7 @@ class PayloadDetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               children: [
@@ -31,9 +36,50 @@ class PayloadDetailPage extends StatelessWidget {
                 _buildCargoDescriptionCard(),
               ],
             ),
+            const SizedBox(height: 40),
+            _buildPayloadChips()
           ],
         ),
       ),
+    );
+  }
+
+  Column _buildPayloadChips() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Barang yang biasa dibawa',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: defaultPayloads
+              .map((payload) => RawChip(
+                    label: Text('${payload.name} (${payload.size})'),
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    labelStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      // TODO: add action to store payload
+                      debugPrint(payload.name);
+                    },
+                  ))
+              .toList(),
+        )
+      ],
     );
   }
 
