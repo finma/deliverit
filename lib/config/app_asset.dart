@@ -1,6 +1,7 @@
 class AppAsset {
   static const fotoBanner = 'assets/images/foto_banner.png';
   static const fotoBox = 'assets/images/foto_box.png';
+  static const fotoPayload = 'assets/images/foto_payload.png';
   static const iconBag = 'assets/images/icon_bag.png';
   static const iconCall = 'assets/images/icon_call.png';
   static const iconClock = 'assets/images/icon_clock.png';
