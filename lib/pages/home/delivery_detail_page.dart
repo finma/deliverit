@@ -238,11 +238,11 @@ class FormDetail extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText:
-                        'Catatan Pengirim (nama gedung, lantai, lantai 2 gedung A, dll)',
+                        'Catatan ${isReceiver ? "penerima" : "pengirim"} (nama gedung, lantai, lantai 2 gedung A, dll)',
                     border: InputBorder.none,
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
