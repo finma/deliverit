@@ -15,6 +15,7 @@ class Routes {
   static const String myAddress = 'my-address';
   static const String otp = 'otp';
   static const String paymentMethod = 'payment-method';
+  static const String payloadDetail = 'payload-detail';
   static const String profile = 'profile';
   static const String register = 'register';
   static const String resetPassword = 'reset-password';

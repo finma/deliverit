@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/app_color.dart';
 import '/cubit/switch_cubit.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/model/user_delivery.dart';
+import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
@@ -91,6 +93,8 @@ class DeliveryDetailPage extends StatelessWidget {
                             deliverCubit.addSender(sender);
                             deliverCubit.addReceiver(receiver);
                             // debugPrint('${deliverCubit.state.toJson()}');
+
+                            context.goNamed(Routes.payloadDetail);
                           }
                         },
                       ),
