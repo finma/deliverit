@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
@@ -26,10 +27,10 @@ class PayloadDetailPage extends StatelessWidget {
           children: [
             Stack(
               children: [
-                _buildGuidelineCard(),
+                _buildGuidelineCard(context),
                 _buildCargoDescriptionCard(),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -37,7 +38,7 @@ class PayloadDetailPage extends StatelessWidget {
   }
 
   // Widget for displaying the guideline card
-  Widget _buildGuidelineCard() {
+  Widget _buildGuidelineCard(BuildContext context) {
     return Container(
       height: 260,
       decoration: BoxDecoration(
@@ -51,9 +52,7 @@ class PayloadDetailPage extends StatelessWidget {
             color: AppColor.secondary,
             borderRadius: BorderRadius.circular(24),
             child: InkWell(
-              onTap: () {
-                debugPrint('buka panduan');
-              },
+              onTap: () => _buildModalBottomSheet(context),
               borderRadius: BorderRadius.circular(24),
               child: Container(
                 width: double.infinity,
@@ -84,6 +83,57 @@ class PayloadDetailPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<dynamic> _buildModalBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(24),
+            ),
+          ),
+          child: Column(
+            children: [
+              Image.asset(AppAsset.fotoPayload),
+              const SizedBox(height: 36),
+              const Text(
+                'Panduan Ukuran Barang',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 32),
+              const Text(
+                'Kecil : Bisa diangkat satu tangan\nSedang : Bisa diangkat dua tangan\nBesar : Harus diangkut dua orang atau lebih',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const Spacer(),
+              ButtonCustom(
+                label: 'Saya mengerti',
+                onTap: () {
+                  context.pop();
+                },
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
