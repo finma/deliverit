@@ -36,8 +36,23 @@ class PayloadDetailPage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      bottomSheet: Container(
         padding: const EdgeInsets.all(16),
+        color: Colors.white,
+        child: BlocBuilder<DeliverCubit, DeliverState>(
+          builder: (context, state) {
+            return ButtonCustom(
+              label: 'Lanjut',
+              isDisabled: state.payloads.isEmpty,
+              onTap: () {
+                // context.goNamed(Routes.deliver);
+              },
+            );
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
