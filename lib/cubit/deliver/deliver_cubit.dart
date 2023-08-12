@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/model/map_address.dart';
+import '/model/payload.dart';
 import '/model/user_delivery.dart';
 
 part 'deliver_state.dart';
@@ -19,6 +20,7 @@ class DeliverCubit extends Cubit<DeliverState> {
           polylineSet: {},
           markerSet: {},
           circleSet: {},
+          payloads: [],
         ));
 
   // create void add current location
@@ -76,6 +78,30 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(receiver: receiver));
   }
 
+  // create void to add payload
+  void addPayload(Payload payload) {
+    final List<Payload> newPayloads = [...state.payloads];
+    newPayloads.add(payload);
+    emit(state.copyWith(payloads: newPayloads));
+  }
+
+  // create void to add qty payload by id
+  void addQtyPayload(String id) {
+    final List<Payload> newPayloads = [...state.payloads];
+    final Payload payload =
+        newPayloads.firstWhere((payload) => payload.id == id);
+    payload.qty++;
+    emit(state.copyWith(payloads: newPayloads));
+  }
+
+  void removeQtyPayload(String id) {
+    final List<Payload> newPayloads = [...state.payloads];
+    final Payload payload =
+        newPayloads.firstWhere((payload) => payload.id == id);
+    if (payload.qty > 1) payload.qty--;
+    emit(state.copyWith(payloads: newPayloads));
+  }
+
   // create void to clear current position
   void clearCurrentPosition() {
     emit(state.copyWith(currentPosition: null));
@@ -119,6 +145,18 @@ class DeliverCubit extends Cubit<DeliverState> {
   // create void to clear receiver
   void clearReceiver() {
     emit(state.copyWith(receiver: null));
+  }
+
+  // create void to clear payloads
+  void clearPayloads() {
+    emit(state.copyWith(payloads: []));
+  }
+
+  // create void to clear payload by id
+  void removePayload(String id) {
+    final List<Payload> newPayloads = [...state.payloads];
+    newPayloads.removeWhere((payload) => payload.id == id);
+    emit(state.copyWith(payloads: newPayloads));
   }
 
   // create void to clear all state

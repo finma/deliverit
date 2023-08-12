@@ -12,6 +12,7 @@ class DeliverState {
   final Position? currentPosition;
   final UserDelivery? sender;
   final UserDelivery? receiver;
+  final List<Payload> payloads;
 
   DeliverState({
     this.pickUpAddress,
@@ -24,10 +25,12 @@ class DeliverState {
     Set<Polyline>? polylineSet,
     Set<Marker>? markerSet,
     Set<Circle>? circleSet,
+    List<Payload>? payloads,
   })  : pLineCoordinates = pLineCoordinates ?? [],
         polylineSet = polylineSet ?? {},
         markerSet = markerSet ?? {},
         circleSet = circleSet ?? {},
+        payloads = payloads ?? [],
         isLocationUpdated = isLocationUpdated ?? false,
         isObtainDirection = (pickUpAddress != null && dropOffAddress != null);
 
@@ -42,6 +45,7 @@ class DeliverState {
     Position? currentPosition,
     UserDelivery? sender,
     UserDelivery? receiver,
+    List<Payload>? payloads,
   }) {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
@@ -54,6 +58,7 @@ class DeliverState {
       currentPosition: currentPosition ?? this.currentPosition,
       sender: sender ?? this.sender,
       receiver: receiver ?? this.receiver,
+      payloads: payloads ?? this.payloads,
     );
   }
 
@@ -70,6 +75,7 @@ class DeliverState {
       // 'circleSet': circleSet.map((e) => e.toJson()).toList(),
       'sender': sender?.toJson(),
       'receiver': receiver?.toJson(),
+      'payloads': payloads.map((e) => e.toJson()).toList(),
     };
   }
 }
