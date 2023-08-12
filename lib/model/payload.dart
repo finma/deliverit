@@ -1,23 +1,31 @@
+import 'package:uuid/uuid.dart';
+
+var uuid = const Uuid();
+
 enum PayloadSize { small, medium, large }
 
 class Payload {
+  String? id;
   String name;
   PayloadSize size;
   int qty;
 
   Payload({
+    String? id,
     required this.name,
     required this.size,
     this.qty = 0,
-  });
+  }) : id = id ?? uuid.v4();
 
   factory Payload.fromJson(Map<String, dynamic> json) => Payload(
+        id: json["id"],
         name: json["name"],
         size: json["size"],
         qty: json["qty"],
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "name": name,
         "size": size,
         "qty": qty,
