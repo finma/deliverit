@@ -31,9 +31,18 @@ class PayloadDetailPage extends StatelessWidget {
         title: const Text(
           'Detail Muatan',
           style: TextStyle(
+            color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back_rounded),
+          color: Colors.black,
         ),
       ),
       bottomSheet: Container(

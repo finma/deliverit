@@ -28,14 +28,23 @@ class DeliveryDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         title: const Text(
           'Detail Pengirim dan Penerima Barang',
           style: TextStyle(
+            color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
-        elevation: 0,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back_rounded),
+          color: Colors.black,
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
