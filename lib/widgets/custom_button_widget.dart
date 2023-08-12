@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '/config/app_color.dart';
 
 enum ButtonType { primary, secondary }
@@ -12,6 +11,7 @@ class ButtonCustom extends StatelessWidget {
     this.isExpanded = true,
     this.type = ButtonType.primary,
     this.icon,
+    this.isDisabled = false,
   }) : super(key: key);
 
   final String label;
@@ -19,15 +19,23 @@ class ButtonCustom extends StatelessWidget {
   final bool isExpanded;
   final ButtonType type;
   final String? icon;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = isDisabled
+        ? Colors.grey
+        : (type == ButtonType.primary ? AppColor.primary : Colors.white);
+    Color textColor = isDisabled
+        ? Colors.white
+        : (type == ButtonType.primary ? Colors.white : Colors.black);
+
     return Material(
       borderRadius: BorderRadius.circular(15),
-      color: type == ButtonType.primary ? AppColor.primary : Colors.white,
+      color: backgroundColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
-        onTap: onTap,
+        onTap: isDisabled ? null : onTap,
         child: Container(
           width: isExpanded ? double.infinity : null,
           padding: const EdgeInsets.symmetric(
@@ -45,8 +53,7 @@ class ButtonCustom extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   letterSpacing: type == ButtonType.primary ? 1 : 0,
-                  color:
-                      type == ButtonType.primary ? Colors.white : Colors.black,
+                  color: textColor,
                   fontWeight: type == ButtonType.primary
                       ? FontWeight.bold
                       : FontWeight.normal,
