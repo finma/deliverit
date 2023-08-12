@@ -83,7 +83,7 @@ class PayloadDetailPage extends StatelessWidget {
             ),
             // * PAYLOAD CHIPS
             const SizedBox(height: 40),
-            _buildPayloadChips()
+            _buildPayloadChips(context)
           ],
         ),
       ),
@@ -181,7 +181,7 @@ class PayloadDetailPage extends StatelessWidget {
     );
   }
 
-  Column _buildPayloadChips() {
+  Column _buildPayloadChips(BuildContext context) {
     // debugPrint('build chips');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,8 +212,8 @@ class PayloadDetailPage extends StatelessWidget {
                       color: Colors.black,
                     ),
                     onPressed: () {
-                      // TODO: add action to store payload
-                      debugPrint(payload.name);
+                      // debugPrint(payload.name);
+                      context.read<DeliverCubit>().addPayload(payload);
                     },
                   ))
               .toList(),
