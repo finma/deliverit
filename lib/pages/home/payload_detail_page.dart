@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
+import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/data/payload.dart';
 import '/model/payload.dart';
 import '/widgets/custom_button_widget.dart';
+import '/widgets/custom_outline_button_widget.dart';
 
 class PayloadDetailPage extends StatelessWidget {
   PayloadDetailPage({Key? key}) : super(key: key);
@@ -39,12 +41,47 @@ class PayloadDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                _buildGuidelineCard(context),
-                _buildCargoDescriptionCard(context),
-              ],
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                // debugPrint('state ${state.toJson()}');
+                // debugPrint('build');
+
+                // * GUIDELINE CARD
+                if (state.payloads.isEmpty) {
+                  return Stack(
+                    children: [
+                      _buildGuidelineCard(context),
+                      _buildCargoDescriptionCard(context),
+                    ],
+                  );
+                }
+
+                // * LIST PAYLOAD
+                return Column(
+                  children: [
+                    ...state.payloads
+                        .map((payload) => _buildItemPayload(
+                              payload.id!,
+                              payload.name,
+                              Payload.sizeToString(payload.size),
+                              payload.qty,
+                              context,
+                            ))
+                        .toList(),
+                    const SizedBox(height: 40),
+                    ButtonOutlineCustom(
+                      label: 'Tambah Barang',
+                      icon: const Icon(
+                        Icons.add_circle_outline_rounded,
+                        color: AppColor.primary,
+                      ),
+                      onTap: () => openDialog(context),
+                    )
+                  ],
+                );
+              },
             ),
+            // * PAYLOAD CHIPS
             const SizedBox(height: 40),
             _buildPayloadChips()
           ],
@@ -53,7 +90,99 @@ class PayloadDetailPage extends StatelessWidget {
     );
   }
 
+  Container _buildItemPayload(
+    String id,
+    String name,
+    String size,
+    int qty,
+    BuildContext context,
+  ) {
+    final DeliverCubit deliverCubit = context.read<DeliverCubit>();
+    return Container(
+      padding: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey[300]!,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                size,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton.icon(
+                onPressed: () => deliverCubit.removePayload(id),
+                icon:
+                    const Icon(Icons.delete_outline_rounded, color: Colors.red),
+                label: const Text(
+                  'Hapus',
+                  style: TextStyle(color: Colors.red),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: const BorderSide(color: Colors.red),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => deliverCubit.removeQtyPayload(id),
+                icon: const Icon(
+                  Icons.remove_circle_outline_rounded,
+                  color: AppColor.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                qty.toString(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 12),
+              IconButton(
+                onPressed: () => deliverCubit.addQtyPayload(id),
+                icon: const Icon(
+                  Icons.add_circle_outline_rounded,
+                  color: AppColor.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Column _buildPayloadChips() {
+    // debugPrint('build chips');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,10 +399,13 @@ class PayloadDetailPage extends StatelessWidget {
                     final payload = Payload(
                       name: payloadNameController.text,
                       size: Payload.stringToSize(selectSize.state),
+                      qty: 1,
                     );
 
-                    //TODO: store to state
-                    debugPrint('${payload.toJson()}');
+                    //* Add payload to state
+                    context.read<DeliverCubit>().addPayload(payload);
+                    // debugPrint('${payload.toJson()}');
+
                     payloadNameController.clear();
                     selectSize.setSelectedValue('');
                     context.pop();
