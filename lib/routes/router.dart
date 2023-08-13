@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '/model/address.dart';
 
+import '/pages/home/choose_vehicle_page.dart';
 import '/pages/home/deliver_page.dart';
 import '/pages/home/delivery_detail_page.dart';
 import '/pages/home/home_page.dart';
@@ -53,6 +54,13 @@ final router = GoRouter(
                   path: 'payload-detail',
                   name: Routes.payloadDetail,
                   builder: (context, state) => PayloadDetailPage(),
+                  routes: [
+                    GoRoute(
+                      path: 'choose-vehicle',
+                      name: Routes.chooseVehicle,
+                      builder: (context, state) => ChooseVehiclePage(),
+                    ),
+                  ],
                 ),
               ],
             )

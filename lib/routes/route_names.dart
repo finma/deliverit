@@ -3,6 +3,7 @@ part of 'router.dart';
 class Routes {
   static const String account = 'account';
   static const String changePassword = 'change-password';
+  static const String chooseVehicle = 'choose-vehicle';
   static const String createAddress = 'create-address';
   static const String deliver = 'deliver';
   static const String deliveryDetail = 'delivery-detail';
