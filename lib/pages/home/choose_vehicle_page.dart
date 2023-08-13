@@ -1,12 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_color.dart';
 import '/config/app_format.dart';
+import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/data/vehicle.dart';
 import '/model/vehicle.dart';
+import '/widgets/custom_button_widget.dart';
 
 class ChooseVehiclePage extends StatelessWidget {
   ChooseVehiclePage({super.key});
@@ -16,6 +19,8 @@ class ChooseVehiclePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -36,13 +41,31 @@ class ChooseVehiclePage extends StatelessWidget {
           color: Colors.black,
         ),
       ),
+      bottomSheet: Container(
+        padding: const EdgeInsets.all(16),
+        color: Colors.white,
+        child: BlocBuilder<DeliverCubit, DeliverState>(
+          builder: (context, state) {
+            return ButtonCustom(
+              label: 'Lanjut',
+              isDisabled: state.vehicle == null,
+              onTap: () {
+                // context.goNamed(Routes.deliver);
+                debugPrint('vehicle: ${state.toJson()}');
+              },
+            );
+          },
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _buildListVehicles(context),
+                _buildListVehicles(context, deliverCubit),
+                const SizedBox(height: 32),
+                _buildAddCarrier(deliverCubit)
               ],
             ),
           ),
@@ -51,7 +74,79 @@ class ChooseVehiclePage extends StatelessWidget {
     );
   }
 
-  SizedBox _buildListVehicles(BuildContext context) {
+  Column _buildAddCarrier(DeliverCubit deliverCubit) {
+    return Column(
+      children: [
+        const Row(
+          children: [
+            Text(
+              'Tambah Pengangkut',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 24),
+            Icon(
+              CupertinoIcons.exclamationmark_circle,
+              size: 18,
+            )
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            const Expanded(
+              child: Text(
+                'Pengangkut bisa bantuin kamu mindahin barang. Rp.50.000/pengangkut.',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            SizedBox(
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => deliverCubit.removeCarrier(),
+                    icon: const Icon(
+                      Icons.remove_circle_outline_rounded,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  BlocBuilder<DeliverCubit, DeliverState>(
+                    builder: (context, state) {
+                      return Text(
+                        state.carrier.toString(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 6),
+                  IconButton(
+                    onPressed: () => deliverCubit.addCarrier(),
+                    icon: const Icon(
+                      Icons.add_circle_outline_rounded,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
+  SizedBox _buildListVehicles(BuildContext context, DeliverCubit deliverCubit) {
     return SizedBox(
       // padding: const EdgeInsets.all(16),
       child: ListView.separated(
@@ -67,7 +162,10 @@ class ChooseVehiclePage extends StatelessWidget {
             color: Colors.grey[100],
             borderRadius: BorderRadius.circular(24),
             child: InkWell(
-              onTap: () => selectVehicle.setSelectedValue(vehicle.id),
+              onTap: () {
+                selectVehicle.setSelectedValue(vehicle.id);
+                deliverCubit.addVehicle(vehicle);
+              },
               borderRadius: BorderRadius.circular(24),
               child: BlocBuilder<SelectCubit<int>, int>(
                 bloc: selectVehicle,
