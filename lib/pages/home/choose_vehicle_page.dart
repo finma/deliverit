@@ -17,6 +17,9 @@ class ChooseVehiclePage extends StatelessWidget {
   final List<Vehicle> vehicles = DataVehicle.all;
   final SelectCubit<int> selectVehicle = SelectCubit(0);
 
+  //dummy distance
+  final double distance = 12.34; //km
+
   @override
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
@@ -41,22 +44,7 @@ class ChooseVehiclePage extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      bottomSheet: Container(
-        padding: const EdgeInsets.all(16),
-        color: Colors.white,
-        child: BlocBuilder<DeliverCubit, DeliverState>(
-          builder: (context, state) {
-            return ButtonCustom(
-              label: 'Lanjut',
-              isDisabled: state.vehicle == null,
-              onTap: () {
-                // context.goNamed(Routes.deliver);
-                debugPrint('vehicle: ${state.toJson()}');
-              },
-            );
-          },
-        ),
-      ),
+      bottomSheet: _buildBottomSheetButton(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -70,6 +58,99 @@ class ChooseVehiclePage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Container _buildBottomSheetButton() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: BlocBuilder<DeliverCubit, DeliverState>(
+        builder: (context, state) {
+          double totalPrice = 0;
+
+          if (state.vehicle != null) {
+            totalPrice = (state.vehicle!.price.toDouble() * distance) +
+                (state.carrier.toDouble() * 50000);
+          }
+
+          return IntrinsicHeight(
+            child: Column(
+              children: [
+                Text(
+                  'Total jarak $distance km • 22 menit',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                ButtonCustom(
+                  // label: 'Pilih Kendaraan',
+                  isDisabled: state.vehicle == null,
+                  onTap: () {
+                    // context.goNamed(Routes.deliver);
+                    debugPrint('vehicle: ${state.toJson()}');
+                  },
+                  child: state.vehicle == null
+                      ? const Text(
+                          'Pilih Kendaraan',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppFormat.currency(totalPrice),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  'Perkiraan biaya',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            const Row(
+                              children: [
+                                Text(
+                                  'Lanjut',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
