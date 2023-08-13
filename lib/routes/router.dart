@@ -4,7 +4,7 @@ import '/model/address.dart';
 
 import '/pages/home/choose_vehicle_page.dart';
 import '/pages/home/deliver_page.dart';
-import '/pages/home/delivery_detail_page.dart';
+import '/pages/home/location_detail_page.dart';
 import '/pages/home/home_page.dart';
 import '/pages/home/payload_detail_page.dart';
 import '/pages/home/search_page.dart';
@@ -47,8 +47,8 @@ final router = GoRouter(
             ),
             GoRoute(
               path: 'delivery-detail',
-              name: Routes.deliveryDetail,
-              builder: (context, state) => DeliveryDetailPage(),
+              name: Routes.locationDetail,
+              builder: (context, state) => LocationDetailPage(),
               routes: [
                 GoRoute(
                   path: 'payload-detail',

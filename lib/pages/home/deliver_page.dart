@@ -258,7 +258,7 @@ class _DeliverPageState extends State<DeliverPage> {
                                 return ButtonCustom(
                                   label: 'Lanjutkan',
                                   onTap: () {
-                                    context.goNamed(Routes.deliveryDetail);
+                                    context.goNamed(Routes.locationDetail);
                                   },
                                   type: ButtonType.secondary,
                                 );

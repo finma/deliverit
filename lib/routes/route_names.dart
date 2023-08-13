@@ -6,10 +6,10 @@ class Routes {
   static const String chooseVehicle = 'choose-vehicle';
   static const String createAddress = 'create-address';
   static const String deliver = 'deliver';
-  static const String deliveryDetail = 'delivery-detail';
   static const String help = 'help';
   static const String history = 'history';
   static const String home = 'home';
+  static const String locationDetail = 'location-detail';
   static const String login = 'login';
   static const String message = 'message';
   static const String mitraFavourite = 'mitra-favourite';

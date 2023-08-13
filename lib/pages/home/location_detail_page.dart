@@ -8,8 +8,8 @@ import '/model/user_delivery.dart';
 import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 
-class DeliveryDetailPage extends StatelessWidget {
-  DeliveryDetailPage({super.key});
+class LocationDetailPage extends StatelessWidget {
+  LocationDetailPage({super.key});
 
   final TextEditingController nameController1 = TextEditingController();
   final TextEditingController phoneNumberController1 = TextEditingController();
