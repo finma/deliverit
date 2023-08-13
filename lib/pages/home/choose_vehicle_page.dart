@@ -38,21 +38,27 @@ class ChooseVehiclePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [_buildListVehicles(context)],
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _buildListVehicles(context),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container _buildListVehicles(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      height: MediaQuery.of(context).size.height * 0.8,
+  SizedBox _buildListVehicles(BuildContext context) {
+    return SizedBox(
+      // padding: const EdgeInsets.all(16),
       child: ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(height: 16),
         itemCount: vehicles.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final vehicle = vehicles[index];
 
