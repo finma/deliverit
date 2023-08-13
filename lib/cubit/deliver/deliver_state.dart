@@ -13,6 +13,8 @@ class DeliverState {
   final UserDelivery? sender;
   final UserDelivery? receiver;
   final List<Payload> payloads;
+  final Vehicle? vehicle;
+  final int carrier;
 
   DeliverState({
     this.pickUpAddress,
@@ -20,6 +22,8 @@ class DeliverState {
     this.currentPosition,
     this.sender,
     this.receiver,
+    this.vehicle,
+    this.carrier = 0,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
     Set<Polyline>? polylineSet,
@@ -46,6 +50,8 @@ class DeliverState {
     UserDelivery? sender,
     UserDelivery? receiver,
     List<Payload>? payloads,
+    Vehicle? vehicle,
+    int? carrier,
   }) {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
@@ -59,23 +65,27 @@ class DeliverState {
       sender: sender ?? this.sender,
       receiver: receiver ?? this.receiver,
       payloads: payloads ?? this.payloads,
+      vehicle: vehicle ?? this.vehicle,
+      carrier: carrier ?? this.carrier,
     );
   }
 
   // create to json state
   Map<String, dynamic> toJson() {
     return {
-      'pickUpAddress': pickUpAddress?.toJson(),
-      'dropOffAddress': dropOffAddress?.toJson(),
-      'currentPosition': currentPosition?.toJson(),
-      'isLocationUpdated': isLocationUpdated,
+      // 'pickUpAddress': pickUpAddress?.toJson(),
+      // 'dropOffAddress': dropOffAddress?.toJson(),
+      // 'currentPosition': currentPosition?.toJson(),
+      // 'isLocationUpdated': isLocationUpdated,
       // 'pLineCoordinates': pLineCoordinates.map((e) => e.toJson()).toList(),
       // 'polylineSet': polylineSet.map((e) => e.toJson()).toList(),
       // 'markerSet': markerSet.map((e) => e.toJson()).toList(),
       // 'circleSet': circleSet.map((e) => e.toJson()).toList(),
-      'sender': sender?.toJson(),
-      'receiver': receiver?.toJson(),
-      'payloads': payloads.map((e) => e.toJson()).toList(),
+      // 'sender': sender?.toJson(),
+      // 'receiver': receiver?.toJson(),
+      // 'payloads': payloads.map((e) => e.toJson()).toList(),
+      'vehicle': vehicle?.toJson(),
+      'carrier': carrier,
     };
   }
 }

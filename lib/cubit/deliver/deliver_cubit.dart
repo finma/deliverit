@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '/model/map_address.dart';
 import '/model/payload.dart';
 import '/model/user_delivery.dart';
+import '/model/vehicle.dart';
 
 part 'deliver_state.dart';
 
@@ -102,6 +103,21 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(payloads: newPayloads));
   }
 
+  // create void to add vehicle
+  void addVehicle(Vehicle vehicle) {
+    emit(state.copyWith(vehicle: vehicle));
+  }
+
+  // create void to add carrier +1
+  void addCarrier() {
+    emit(state.copyWith(carrier: state.carrier + 1));
+  }
+
+  // create void to add carrier -1
+  void removeCarrier() {
+    if (state.carrier > 0) emit(state.copyWith(carrier: state.carrier - 1));
+  }
+
   // create void to clear current position
   void clearCurrentPosition() {
     emit(state.copyWith(currentPosition: null));
@@ -157,6 +173,16 @@ class DeliverCubit extends Cubit<DeliverState> {
     final List<Payload> newPayloads = [...state.payloads];
     newPayloads.removeWhere((payload) => payload.id == id);
     emit(state.copyWith(payloads: newPayloads));
+  }
+
+  // create void to clear vehicle
+  void clearVehicle() {
+    emit(state.copyWith(vehicle: null));
+  }
+
+  // create void to clear carrier
+  void clearCarrier() {
+    emit(state.copyWith(carrier: 0));
   }
 
   // create void to clear all state
