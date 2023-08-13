@@ -37,6 +37,11 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(dropOffAddress: address));
   }
 
+  // create void to set distance
+  void setDistance(double distance) {
+    emit(state.copyWith(distance: distance));
+  }
+
   void setIsLocationUpdated(bool value) {
     emit(state.copyWith(isLocationUpdated: value));
   }
@@ -131,6 +136,11 @@ class DeliverCubit extends Cubit<DeliverState> {
   // create void to clear drop off address
   void clearDropOffAddress() {
     emit(state.copyWith(dropOffAddress: null));
+  }
+
+  // create void to clear distance
+  void clearDistance() {
+    emit(state.copyWith(distance: 0));
   }
 
   // create void to clear is location updated

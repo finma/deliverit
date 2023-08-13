@@ -3,6 +3,7 @@ part of 'deliver_cubit.dart';
 class DeliverState {
   final MapAddress? pickUpAddress;
   final MapAddress? dropOffAddress;
+  final double distance;
   final bool? isObtainDirection;
   final bool isLocationUpdated;
   final List<LatLng> pLineCoordinates;
@@ -20,6 +21,7 @@ class DeliverState {
     this.pickUpAddress,
     this.dropOffAddress,
     this.currentPosition,
+    this.distance = 0,
     this.sender,
     this.receiver,
     this.vehicle,
@@ -41,6 +43,7 @@ class DeliverState {
   DeliverState copyWith({
     MapAddress? pickUpAddress,
     MapAddress? dropOffAddress,
+    double? distance,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
     Set<Polyline>? polylineSet,
@@ -56,6 +59,7 @@ class DeliverState {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
       dropOffAddress: dropOffAddress ?? this.dropOffAddress,
+      distance: distance ?? this.distance,
       isLocationUpdated: isLocationUpdated ?? this.isLocationUpdated,
       pLineCoordinates: pLineCoordinates ?? this.pLineCoordinates,
       polylineSet: polylineSet ?? this.polylineSet,
@@ -73,17 +77,18 @@ class DeliverState {
   // create to json state
   Map<String, dynamic> toJson() {
     return {
-      // 'pickUpAddress': pickUpAddress?.toJson(),
-      // 'dropOffAddress': dropOffAddress?.toJson(),
+      'pickUpAddress': pickUpAddress?.toJson(),
+      'dropOffAddress': dropOffAddress?.toJson(),
+      'distance': distance,
       // 'currentPosition': currentPosition?.toJson(),
       // 'isLocationUpdated': isLocationUpdated,
       // 'pLineCoordinates': pLineCoordinates.map((e) => e.toJson()).toList(),
       // 'polylineSet': polylineSet.map((e) => e.toJson()).toList(),
       // 'markerSet': markerSet.map((e) => e.toJson()).toList(),
       // 'circleSet': circleSet.map((e) => e.toJson()).toList(),
-      // 'sender': sender?.toJson(),
-      // 'receiver': receiver?.toJson(),
-      // 'payloads': payloads.map((e) => e.toJson()).toList(),
+      'sender': sender?.toJson(),
+      'receiver': receiver?.toJson(),
+      'payloads': payloads.map((e) => e.toJson()).toList(),
       'vehicle': vehicle?.toJson(),
       'carrier': carrier,
     };
