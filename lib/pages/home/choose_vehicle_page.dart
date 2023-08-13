@@ -17,9 +17,6 @@ class ChooseVehiclePage extends StatelessWidget {
   final List<Vehicle> vehicles = DataVehicle.all;
   final SelectCubit<int> selectVehicle = SelectCubit(0);
 
-  //dummy distance
-  final double distance = 12.34; //km
-
   @override
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
@@ -69,6 +66,7 @@ class ChooseVehiclePage extends StatelessWidget {
       child: BlocBuilder<DeliverCubit, DeliverState>(
         builder: (context, state) {
           double totalPrice = 0;
+          double distance = state.distance;
 
           if (state.vehicle != null) {
             totalPrice = (state.vehicle!.price.toDouble() * distance) +

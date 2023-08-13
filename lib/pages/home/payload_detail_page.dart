@@ -9,6 +9,7 @@ import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/data/payload.dart';
 import '/model/payload.dart';
+import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 import '/widgets/custom_outline_button_widget.dart';
 
@@ -53,9 +54,7 @@ class PayloadDetailPage extends StatelessWidget {
             return ButtonCustom(
               label: 'Lanjut',
               isDisabled: state.payloads.isEmpty,
-              onTap: () {
-                // context.goNamed(Routes.deliver);
-              },
+              onTap: () => context.goNamed(Routes.chooseVehicle),
             );
           },
         ),
