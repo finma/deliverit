@@ -2,6 +2,9 @@ class AppAsset {
   static const fotoBanner = 'assets/images/foto_banner.png';
   static const fotoBox = 'assets/images/foto_box.png';
   static const fotoPayload = 'assets/images/foto_payload.png';
+  static const fotoVehiclePickup = 'assets/images/foto_vehicle_pickup.png';
+  static const fotoVehicleTruck = 'assets/images/foto_vehicle_truck.png';
+  static const fotoVehicleTruckBox = 'assets/images/foto_vehicle_truck_box.png';
   static const iconBag = 'assets/images/icon_bag.png';
   static const iconCall = 'assets/images/icon_call.png';
   static const iconClock = 'assets/images/icon_clock.png';
