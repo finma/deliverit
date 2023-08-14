@@ -5,13 +5,17 @@ import 'package:go_router/go_router.dart';
 import '/config/app_color.dart';
 import '/config/app_symbol.dart';
 import '/data/payload.dart';
+import '/data/vehicle.dart';
 import '/model/payload.dart';
+import '/model/vehicle.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
   DeliveryDetailPage({super.key});
 
-  // * data dummy payloads
+  // * data dummy
   final List<Payload> dummyPayloads = DataPayload.all;
+  final Vehicle dummyVehicle = DataVehicle.all[1];
+  final int dummyCarrier = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +43,7 @@ class DeliveryDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // * CARD PICK UP ADDRESS
             _buildCardAddress(
               title: 'Alamat pengambilan',
               placeName: 'Cikara Studio',
@@ -49,6 +54,8 @@ class DeliveryDetailPage extends StatelessWidget {
               note: '',
             ),
             const SizedBox(height: 24),
+
+            // * CARD DROP OFF ADDRESS
             _buildCardAddress(
               title: 'Alamat pengiriman',
               placeName: 'Jl.Kona 1',
@@ -59,9 +66,106 @@ class DeliveryDetailPage extends StatelessWidget {
               // note: '',
             ),
             const SizedBox(height: 24),
+
+            // * CARD PAYLOADS
             _buildCardListPayload(payloads: dummyPayloads),
+            const SizedBox(height: 24),
+
+            // * CARD VEHICLE
+            _buildCardVehicle(vehicle: dummyVehicle, carrier: dummyCarrier),
+            const SizedBox(height: 24),
           ],
         ),
+      ),
+    );
+  }
+
+  Container _buildCardVehicle(
+      {required Vehicle vehicle, required int carrier}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.5),
+        ),
+        //create box shadow
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Column(
+                children: [
+                  Icon(
+                    Icons.directions_car_outlined,
+                    color: AppColor.primary,
+                  ),
+                ],
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 3),
+                  const Text('Mobil yang dipilih'),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Container(
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            vehicle.image,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            vehicle.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '$carrier pengangkut tambahan',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
