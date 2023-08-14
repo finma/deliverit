@@ -11,13 +11,14 @@ import '/widgets/custom_button_widget.dart';
 class LocationDetailPage extends StatelessWidget {
   LocationDetailPage({super.key});
 
-  final TextEditingController nameController1 = TextEditingController();
-  final TextEditingController phoneNumberController1 = TextEditingController();
-  final TextEditingController noteController1 = TextEditingController();
+  final TextEditingController _senderNameController = TextEditingController();
+  final TextEditingController _senderPhoneController = TextEditingController();
+  final TextEditingController _senderNoteController = TextEditingController();
 
-  final TextEditingController nameController2 = TextEditingController();
-  final TextEditingController phoneNumberController2 = TextEditingController();
-  final TextEditingController noteController2 = TextEditingController();
+  final TextEditingController _receiverNameController = TextEditingController();
+  final TextEditingController _receiverPhoneController =
+      TextEditingController();
+  final TextEditingController _receiverNoteController = TextEditingController();
 
   final _formSenderKey = GlobalKey<FormState>();
   final _formReceiverKey = GlobalKey<FormState>();
@@ -25,6 +26,18 @@ class LocationDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
+
+    if (deliverCubit.state.sender != null) {
+      _senderNameController.text = deliverCubit.state.sender!.name;
+      _senderPhoneController.text = deliverCubit.state.sender!.phoneNumber;
+      _senderNoteController.text = deliverCubit.state.sender!.note ?? '';
+    }
+
+    if (deliverCubit.state.receiver != null) {
+      _receiverNameController.text = deliverCubit.state.receiver!.name;
+      _receiverPhoneController.text = deliverCubit.state.receiver!.phoneNumber;
+      _receiverNoteController.text = deliverCubit.state.receiver!.note ?? '';
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -46,6 +59,7 @@ class LocationDetailPage extends StatelessWidget {
           color: Colors.black,
         ),
       ),
+      bottomSheet: _buildBottomSheetButton(deliverCubit, context),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -60,9 +74,9 @@ class LocationDetailPage extends StatelessWidget {
                       FormDetail(
                         formKey: _formSenderKey,
                         title: 'Pengirim Barang',
-                        nameController: nameController1,
-                        phoneNumberController: phoneNumberController1,
-                        noteController: noteController1,
+                        nameController: _senderNameController,
+                        phoneNumberController: _senderPhoneController,
+                        noteController: _senderNoteController,
                       ),
                       const SizedBox(height: 32),
 
@@ -71,48 +85,54 @@ class LocationDetailPage extends StatelessWidget {
                         formKey: _formReceiverKey,
                         title: 'Penerima Barang',
                         isReceiver: true,
-                        nameController: nameController2,
-                        phoneNumberController: phoneNumberController2,
-                        noteController: noteController2,
-                        senderName: nameController1.text,
-                        senderphoneNumber: phoneNumberController1.text,
-                        senderNote: noteController1.text,
+                        nameController: _receiverNameController,
+                        phoneNumberController: _receiverPhoneController,
+                        noteController: _receiverNoteController,
+                        senderName: _senderNameController.text,
+                        senderphoneNumber: _senderPhoneController.text,
+                        senderNote: _senderNoteController.text,
                       ),
-                      const SizedBox(height: 32),
-
-                      // * BUTTON LANJUTKAN
-                      ButtonCustom(
-                        label: 'LANJUTKAN',
-                        onTap: () {
-                          // debugPrint('${deliverCubit.state.toJson()}');
-                          if (_formSenderKey.currentState!.validate() &&
-                              _formReceiverKey.currentState!.validate()) {
-                            UserDelivery sender = UserDelivery(
-                              name: nameController1.text,
-                              phoneNumber: phoneNumberController1.text,
-                              note: noteController1.text,
-                            );
-
-                            UserDelivery receiver = UserDelivery(
-                              name: nameController2.text,
-                              phoneNumber: phoneNumberController2.text,
-                              note: noteController2.text,
-                            );
-
-                            deliverCubit.addSender(sender);
-                            deliverCubit.addReceiver(receiver);
-                            // debugPrint('${deliverCubit.state.toJson()}');
-
-                            context.goNamed(Routes.payloadDetail);
-                          }
-                        },
-                      ),
+                      const SizedBox(height: 100),
                     ],
                   ),
                 ),
               ),
             ),
           );
+        },
+      ),
+    );
+  }
+
+  Container _buildBottomSheetButton(
+      DeliverCubit deliverCubit, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: ButtonCustom(
+        label: 'Lanjut',
+        onTap: () {
+          // debugPrint('${deliverCubit.state.toJson()}');
+          if (_formSenderKey.currentState!.validate() &&
+              _formReceiverKey.currentState!.validate()) {
+            UserDelivery sender = UserDelivery(
+              name: _senderNameController.text,
+              phoneNumber: _senderPhoneController.text,
+              note: _senderNoteController.text,
+            );
+
+            UserDelivery receiver = UserDelivery(
+              name: _receiverNameController.text,
+              phoneNumber: _receiverPhoneController.text,
+              note: _receiverNoteController.text,
+            );
+
+            deliverCubit.addSender(sender);
+            deliverCubit.addReceiver(receiver);
+            // debugPrint('${deliverCubit.state.toJson()}');
+
+            context.goNamed(Routes.payloadDetail);
+          }
         },
       ),
     );
