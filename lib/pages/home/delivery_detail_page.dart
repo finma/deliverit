@@ -7,19 +7,12 @@ import '/config/app_color.dart';
 import '/config/app_symbol.dart';
 import '/config/app_format.dart';
 import '/cubit/deliver/deliver_cubit.dart';
-import '/data/payload.dart';
-import '/data/vehicle.dart';
 import '/model/payload.dart';
 import '/model/vehicle.dart';
 import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
   DeliveryDetailPage({super.key});
-
-  // * data dummy
-  final List<Payload> dummyPayloads = DataPayload.all;
-  final Vehicle dummyVehicle = DataVehicle.all[1];
-  final int dummyCarrier = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -49,35 +42,52 @@ class DeliveryDetailPage extends StatelessWidget {
         child: Column(
           children: [
             // * CARD PICK UP ADDRESS
-            _buildCardAddress(
-              title: 'Alamat pengambilan',
-              placeName: 'Cikara Studio',
-              address:
-                  'Perum Cipta Graha Mandiri Blok C 108, Sukarindik, Kec.Bungursari, Tasikmalaya',
-              phoneNumber: '081123456789',
-              userName: 'Firman Maulana',
-              note: '',
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                return _buildCardAddress(
+                  title: 'Alamat pengambilan',
+                  placeName: state.pickUpAddress!.placeName!,
+                  address: state.pickUpAddress!.placeFormattedAddress!,
+                  phoneNumber: state.sender!.phoneNumber,
+                  userName: state.sender!.name,
+                  note: state.sender!.note,
+                );
+              },
             ),
             const SizedBox(height: 24),
 
             // * CARD DROP OFF ADDRESS
-            _buildCardAddress(
-              title: 'Alamat pengiriman',
-              placeName: 'Jl.Kona 1',
-              address:
-                  'Jl.Kona 1 sukabungur , Sukarindik, Kec.Bungursari, Tasikmalaya',
-              phoneNumber: '081123456789',
-              userName: 'Maulana',
-              // note: '',
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                return _buildCardAddress(
+                  title: 'Alamat pengiriman',
+                  placeName: state.dropOffAddress!.placeName!,
+                  address: state.dropOffAddress!.placeFormattedAddress!,
+                  phoneNumber: state.receiver!.phoneNumber,
+                  userName: state.receiver!.name,
+                  note: state.receiver!.note,
+                );
+              },
             ),
             const SizedBox(height: 24),
 
             // * CARD PAYLOADS
-            _buildCardListPayload(payloads: dummyPayloads),
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                return _buildCardListPayload(payloads: state.payloads);
+              },
+            ),
             const SizedBox(height: 24),
 
             // * CARD VEHICLE
-            _buildCardVehicle(vehicle: dummyVehicle, carrier: dummyCarrier),
+            BlocBuilder<DeliverCubit, DeliverState>(
+              builder: (context, state) {
+                return _buildCardVehicle(
+                  vehicle: state.vehicle!,
+                  carrier: state.carrier,
+                );
+              },
+            ),
             const SizedBox(height: 150),
           ],
         ),
