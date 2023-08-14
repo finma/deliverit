@@ -33,6 +33,7 @@ class DeliveryDetailPage extends StatelessWidget {
         child: Column(
           children: [
             _buildCardAddress(
+              title: 'Alamat pengambilan',
               placeName: 'Cikara Studio',
               address:
                   'Perum Cipta Graha Mandiri Blok C 108, Sukarindik, Kec.Bungursari, Tasikmalaya',
@@ -42,6 +43,7 @@ class DeliveryDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             _buildCardAddress(
+              title: 'Alamat pengiriman',
               placeName: 'Jl.Kona 1',
               address:
                   'Jl.Kona 1 sukabungur , Sukarindik, Kec.Bungursari, Tasikmalaya',
@@ -56,6 +58,7 @@ class DeliveryDetailPage extends StatelessWidget {
   }
 
   Container _buildCardAddress({
+    required String title,
     required String userName,
     required String placeName,
     required String address,
@@ -101,9 +104,9 @@ class DeliveryDetailPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 3),
-                    const Text(
-                      'Alamat Pengambilan',
-                      style: TextStyle(fontSize: 14),
+                    Text(
+                      title,
+                      style: const TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 12),
                     Text(
