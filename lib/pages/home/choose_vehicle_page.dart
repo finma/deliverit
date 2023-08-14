@@ -9,6 +9,7 @@ import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/data/vehicle.dart';
 import '/model/vehicle.dart';
+import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 
 class ChooseVehiclePage extends StatelessWidget {
@@ -85,8 +86,8 @@ class ChooseVehiclePage extends StatelessWidget {
                   // label: 'Pilih Kendaraan',
                   isDisabled: state.vehicle == null,
                   onTap: () {
-                    // context.goNamed(Routes.deliver);
-                    debugPrint('vehicle: ${state.toJson()}');
+                    context.goNamed(Routes.deliveryDetail);
+                    // debugPrint('vehicle: ${state.toJson()}');
                   },
                   child: state.vehicle == null
                       ? const Text(

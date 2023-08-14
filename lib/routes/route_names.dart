@@ -6,6 +6,7 @@ class Routes {
   static const String chooseVehicle = 'choose-vehicle';
   static const String createAddress = 'create-address';
   static const String deliver = 'deliver';
+  static const String deliveryDetail = 'delivery-detail';
   static const String help = 'help';
   static const String history = 'history';
   static const String home = 'home';
