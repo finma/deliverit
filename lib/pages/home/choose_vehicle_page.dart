@@ -78,7 +78,7 @@ class ChooseVehiclePage extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Total jarak $distance km • 22 menit',
+                  'Total jarak $distance km',
                   style: const TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
