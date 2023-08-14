@@ -1,10 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_color.dart';
+import '/config/app_symbol.dart';
+import '/data/payload.dart';
+import '/model/payload.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
-  const DeliveryDetailPage({super.key});
+  DeliveryDetailPage({super.key});
+
+  // * data dummy payloads
+  final List<Payload> dummyPayloads = DataPayload.all;
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +58,105 @@ class DeliveryDetailPage extends StatelessWidget {
               userName: 'Maulana',
               // note: '',
             ),
+            const SizedBox(height: 24),
+            _buildCardListPayload(payloads: dummyPayloads),
           ],
         ),
       ),
+    );
+  }
+
+  Container _buildCardListPayload({
+    required List<Payload> payloads,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.5),
+        ),
+        //create box shadow
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Column(
+                children: [
+                  Icon(
+                    CupertinoIcons.cube_box,
+                    color: AppColor.primary,
+                  ),
+                ],
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 3),
+                    const Text('Barang yang akan dikirim'),
+                    const SizedBox(height: 8),
+                    ...payloads
+                        .map((payload) => _buildItemPayload(payload))
+                        .toList()
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Column _buildItemPayload(Payload payload) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    payload.name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    Payload.sizeToString(payload.size),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text('${AppSymbol.multiplication} ${payload.qty}'),
+          ],
+        ),
+        const Divider(thickness: 1, height: 24)
+      ],
     );
   }
 
