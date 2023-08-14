@@ -256,7 +256,8 @@ class ChooseVehiclePage extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: value == vehicle.id
+                            color: value == vehicle.id ||
+                                    deliverCubit.state.vehicle == vehicle
                                 ? AppColor.primary
                                 : Colors.transparent,
                             width: 1.5,
@@ -311,7 +312,8 @@ class ChooseVehiclePage extends StatelessWidget {
                       ),
 
                       // * CHIP
-                      if (value == vehicle.id)
+                      if (value == vehicle.id ||
+                          deliverCubit.state.vehicle == vehicle)
                         const Positioned(
                           top: 2,
                           right: 8,
