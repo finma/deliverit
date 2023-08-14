@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '/config/app_color.dart';
 import '/config/app_symbol.dart';
+import '/config/app_format.dart';
+import '/cubit/deliver/deliver_cubit.dart';
 import '/data/payload.dart';
 import '/data/vehicle.dart';
 import '/model/payload.dart';
 import '/model/vehicle.dart';
+import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
   DeliveryDetailPage({super.key});
@@ -39,6 +43,7 @@ class DeliveryDetailPage extends StatelessWidget {
           color: Colors.black,
         ),
       ),
+      bottomSheet: _buildBottomSheetButton(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -73,9 +78,114 @@ class DeliveryDetailPage extends StatelessWidget {
 
             // * CARD VEHICLE
             _buildCardVehicle(vehicle: dummyVehicle, carrier: dummyCarrier),
-            const SizedBox(height: 24),
+            const SizedBox(height: 150),
           ],
         ),
+      ),
+    );
+  }
+
+  Container _buildBottomSheetButton() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: BlocBuilder<DeliverCubit, DeliverState>(
+        builder: (context, state) {
+          double totalPrice = 0;
+          double distance = state.distance;
+
+          if (state.vehicle != null) {
+            totalPrice = (state.vehicle!.price.toDouble() * distance) +
+                (state.carrier.toDouble() * 50000);
+          }
+
+          return IntrinsicHeight(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      CupertinoIcons.money_dollar_circle,
+                      color: AppColor.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Tunai',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.more_vert_rounded),
+                      color: Colors.black,
+                      visualDensity: VisualDensity.comfortable,
+                      onPressed: () {
+                        debugPrint('more');
+                      },
+                    )
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ButtonCustom(
+                  // label: 'Pilih Kendaraan',
+                  // isDisabled: state.vehicle == null,
+                  onTap: () {
+                    // context.goNamed(Routes.deliveryDetail);
+                    // debugPrint('vehicle: ${state.toJson()}');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppFormat.currency(totalPrice),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Perkiraan biaya',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      const Row(
+                        children: [
+                          Text(
+                            'Pesan Sekarang',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
