@@ -26,4 +26,12 @@ class AppFormat {
   static String address(Address address) {
     return '${address.address}, ${address.subdistrict}, ${address.city}, ${address.province}, ${address.postalCode}';
   }
+
+  static double countTotalPayment({
+    required double vehiclePrice,
+    required double distance,
+    required int carrier,
+  }) {
+    return (vehiclePrice * distance) + (carrier * 50000);
+  }
 }
