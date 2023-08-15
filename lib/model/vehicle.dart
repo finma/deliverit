@@ -2,8 +2,8 @@ class Vehicle {
   int id;
   String name;
   String image;
-  int maxWeight;
-  int price;
+  double maxWeight;
+  double price;
 
   Vehicle({
     required this.id,
