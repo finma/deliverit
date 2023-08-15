@@ -16,6 +16,7 @@ class DeliverState {
   final List<Payload> payloads;
   final Vehicle? vehicle;
   final int carrier;
+  final double totalPayment;
 
   DeliverState({
     this.pickUpAddress,
@@ -26,6 +27,7 @@ class DeliverState {
     this.receiver,
     this.vehicle,
     this.carrier = 0,
+    this.totalPayment = 0,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
     Set<Polyline>? polylineSet,
@@ -55,6 +57,7 @@ class DeliverState {
     List<Payload>? payloads,
     Vehicle? vehicle,
     int? carrier,
+    double? totalPayment,
   }) {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
@@ -71,6 +74,7 @@ class DeliverState {
       payloads: payloads ?? this.payloads,
       vehicle: vehicle ?? this.vehicle,
       carrier: carrier ?? this.carrier,
+      totalPayment: totalPayment ?? this.totalPayment,
     );
   }
 
@@ -91,6 +95,7 @@ class DeliverState {
       'payloads': payloads.map((e) => e.toJson()).toList(),
       'vehicle': vehicle?.toJson(),
       'carrier': carrier,
+      'totalPayment': totalPayment,
     };
   }
 }

@@ -123,6 +123,11 @@ class DeliverCubit extends Cubit<DeliverState> {
     if (state.carrier > 0) emit(state.copyWith(carrier: state.carrier - 1));
   }
 
+  // create void to add total payment
+  void addTotalPayment(double totalPayment) {
+    emit(state.copyWith(totalPayment: totalPayment));
+  }
+
   // create void to clear current position
   void clearCurrentPosition() {
     emit(state.copyWith(currentPosition: null));
@@ -193,6 +198,11 @@ class DeliverCubit extends Cubit<DeliverState> {
   // create void to clear carrier
   void clearCarrier() {
     emit(state.copyWith(carrier: 0));
+  }
+
+  // create void to clear total payment
+  void clearTotalPayment() {
+    emit(state.copyWith(totalPayment: 0));
   }
 
   // create void to clear all state
