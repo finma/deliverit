@@ -7,12 +7,20 @@ import '/config/app_color.dart';
 import '/config/app_symbol.dart';
 import '/config/app_format.dart';
 import '/cubit/deliver/deliver_cubit.dart';
+import '/cubit/select_cubit.dart';
 import '/model/payload.dart';
 import '/model/vehicle.dart';
 import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
   DeliveryDetailPage({super.key});
+
+  final SelectCubit<int> selectPayment = SelectCubit(1);
+  final int wallet = 0;
+  final int cash = 1;
+
+  // data dummy wallet
+  final double myWallet = 50000;
 
   @override
   Widget build(BuildContext context) {
@@ -112,30 +120,35 @@ class DeliveryDetailPage extends StatelessWidget {
           return IntrinsicHeight(
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      CupertinoIcons.money_dollar_circle,
-                      color: AppColor.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Tunai',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.more_vert_rounded),
-                      color: Colors.black,
-                      visualDensity: VisualDensity.comfortable,
-                      onPressed: () {
-                        debugPrint('more');
-                      },
-                    )
-                  ],
+                BlocBuilder<SelectCubit<int>, int>(
+                  bloc: selectPayment,
+                  builder: (context, state) {
+                    return Row(
+                      children: [
+                        Icon(
+                          state == cash
+                              ? CupertinoIcons.money_dollar_circle
+                              : Icons.wallet_rounded,
+                          color: AppColor.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          state == cash ? 'Tunai' : 'Wallet',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.more_vert_rounded),
+                          color: Colors.black,
+                          visualDensity: VisualDensity.comfortable,
+                          onPressed: () => _buildBottomSheetPayment(context),
+                        )
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 8),
                 ButtonCustom(
@@ -199,6 +212,202 @@ class DeliveryDetailPage extends StatelessWidget {
       ),
     );
   }
+
+  Future _buildBottomSheetPayment(BuildContext context) => showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
+        ),
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Pilih Metode Pembayaran',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(Icons.close_rounded),
+                    )
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Metode Pembayaran',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => selectPayment.setSelectedValue(wallet),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.wallet_rounded,
+                              color: AppColor.primary,
+                            ),
+                            const SizedBox(width: 18),
+                            BlocBuilder<SelectCubit<int>, int>(
+                              bloc: selectPayment,
+                              builder: (context, state) {
+                                DeliverCubit deliverCubit =
+                                    context.read<DeliverCubit>();
+                                double totalPrice = 0;
+                                double distance = deliverCubit.state.distance;
+
+                                if (deliverCubit.state.vehicle != null) {
+                                  totalPrice = (deliverCubit
+                                              .state.vehicle!.price
+                                              .toDouble() *
+                                          distance) +
+                                      (deliverCubit.state.carrier.toDouble() *
+                                          50000);
+                                }
+
+                                return Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 3),
+                                      const Text(
+                                        'Wallet',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      if (myWallet < totalPrice)
+                                        Text(
+                                          'Saldo kurang ${AppFormat.currency(totalPrice - myWallet)}',
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            // const Spacer(),
+                            BlocBuilder<SelectCubit<int>, int>(
+                              bloc: selectPayment,
+                              builder: (context, state) {
+                                return Icon(
+                                  Icons.radio_button_on,
+                                  color: state == wallet
+                                      ? AppColor.primary
+                                      : Colors.grey,
+                                  size: 28,
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(thickness: 2),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Metode Pembayaran Lainnya',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => selectPayment.setSelectedValue(cash),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.money_dollar_circle,
+                              color: AppColor.primary,
+                            ),
+                            const SizedBox(width: 18),
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 3),
+                                  Text(
+                                    'Tunai',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Siapin uang pas ya, biar ga usah repot nungguin kembalian.',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            BlocBuilder<SelectCubit<int>, int>(
+                              bloc: selectPayment,
+                              builder: (context, state) {
+                                return Icon(
+                                  Icons.radio_button_on,
+                                  color: state == cash
+                                      ? AppColor.primary
+                                      : Colors.grey,
+                                  size: 28,
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const Spacer(),
+                ButtonCustom(
+                  label: 'Lanjutkan Pemesanan',
+                  onTap: () => context.pop(),
+                )
+              ],
+            ),
+          );
+        },
+      );
 
   Container _buildCardVehicle(
       {required Vehicle vehicle, required int carrier}) {
