@@ -107,108 +107,100 @@ class DeliveryDetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
-      child: BlocBuilder<DeliverCubit, DeliverState>(
-        builder: (context, state) {
-          double totalPrice = 0;
-          double distance = state.distance;
-
-          if (state.vehicle != null) {
-            totalPrice = (state.vehicle!.price.toDouble() * distance) +
-                (state.carrier.toDouble() * 50000);
-          }
-
-          return IntrinsicHeight(
-            child: Column(
-              children: [
-                BlocBuilder<SelectCubit<int>, int>(
-                  bloc: selectPayment,
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        Icon(
-                          state == cash
-                              ? CupertinoIcons.money_dollar_circle
-                              : Icons.wallet_rounded,
-                          color: AppColor.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          state == cash ? 'Tunai' : 'Wallet',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.more_vert_rounded),
-                          color: Colors.black,
-                          visualDensity: VisualDensity.comfortable,
-                          onPressed: () => _buildBottomSheetPayment(context),
-                        )
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                ButtonCustom(
-                  // label: 'Pilih Kendaraan',
-                  // isDisabled: state.vehicle == null,
-                  onTap: () {
-                    // context.goNamed(Routes.deliveryDetail);
-                    // debugPrint('vehicle: ${state.toJson()}');
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      child: IntrinsicHeight(
+        child: Column(
+          children: [
+            BlocBuilder<SelectCubit<int>, int>(
+              bloc: selectPayment,
+              builder: (context, state) {
+                return Row(
+                  children: [
+                    Icon(
+                      state == cash
+                          ? CupertinoIcons.money_dollar_circle
+                          : Icons.wallet_rounded,
+                      color: AppColor.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      state == cash ? 'Tunai' : 'Wallet',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.more_vert_rounded),
+                      color: Colors.black,
+                      visualDensity: VisualDensity.comfortable,
+                      onPressed: () => _buildBottomSheetPayment(context),
+                    )
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            ButtonCustom(
+              // label: 'Pilih Kendaraan',
+              // isDisabled: state.vehicle == null,
+              onTap: () {
+                // context.goNamed(Routes.deliveryDetail);
+                // debugPrint('vehicle: ${state.toJson()}');
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppFormat.currency(totalPrice),
+                      BlocBuilder<DeliverCubit, DeliverState>(
+                        builder: (context, state) {
+                          return Text(
+                            AppFormat.currency(state.totalPayment),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          const Text(
-                            'Perkiraan biaya',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                      const Spacer(),
-                      const Row(
-                        children: [
-                          Text(
-                            'Pesan Sekarang',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: Colors.white,
-                            size: 24,
-                          )
-                        ],
-                      )
+                      const SizedBox(height: 2),
+                      const Text(
+                        'Perkiraan biaya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  const Row(
+                    children: [
+                      Text(
+                        'Pesan Sekarang',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

@@ -66,12 +66,15 @@ class ChooseVehiclePage extends StatelessWidget {
       color: Colors.white,
       child: BlocBuilder<DeliverCubit, DeliverState>(
         builder: (context, state) {
-          double totalPrice = 0;
+          double totalPayment = 0;
           double distance = state.distance;
 
           if (state.vehicle != null) {
-            totalPrice = (state.vehicle!.price.toDouble() * distance) +
-                (state.carrier.toDouble() * 50000);
+            totalPayment = AppFormat.countTotalPayment(
+              vehiclePrice: state.vehicle!.price,
+              distance: distance,
+              carrier: state.carrier,
+            );
           }
 
           return IntrinsicHeight(
@@ -83,11 +86,11 @@ class ChooseVehiclePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ButtonCustom(
-                  // label: 'Pilih Kendaraan',
                   isDisabled: state.vehicle == null,
                   onTap: () {
+                    context.read<DeliverCubit>().addTotalPayment(totalPayment);
                     context.goNamed(Routes.deliveryDetail);
-                    // debugPrint('vehicle: ${state.toJson()}');
+                    // debugPrint('vehicle: ${state.totalPayment}');
                   },
                   child: state.vehicle == null
                       ? const Text(
@@ -106,7 +109,7 @@ class ChooseVehiclePage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppFormat.currency(totalPrice),
+                                  AppFormat.currency(totalPayment),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
