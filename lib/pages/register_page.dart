@@ -183,6 +183,8 @@ class RegisterPage extends StatelessWidget {
                                 timeInSecForIosWeb: 2,
                               );
 
+                              // TODO: OTP not implemented yet, so go to home page
+                              // context.goNamed(Routes.otp);
                               context.goNamed(Routes.home);
                             }
                           },
@@ -205,16 +207,6 @@ class RegisterPage extends StatelessWidget {
                                               passwordController.text.trim(),
                                         ),
                                       );
-                                  // final Map<String, dynamic> dataUser = {
-                                  //   "name": nameController.text,
-                                  //   "email": emailController.text,
-                                  //   "password": passwordController.text,
-                                  //   "confirmPassword":
-                                  //       confirmPasswordController.text,
-                                  // };
-
-                                  // debugPrint('$dataUser');
-                                  // context.goNamed(Routes.otp);
                                 }
                               },
                             );
