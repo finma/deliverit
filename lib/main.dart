@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '/bloc/auth/auth_bloc.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/navigation_cubit.dart';
 import '/config/app_color.dart';
@@ -20,6 +20,7 @@ Future<void> main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => AuthBloc()),
         BlocProvider(create: (_) => NavigationCubit()),
         BlocProvider(create: (_) => DeliverCubit()),
       ],
