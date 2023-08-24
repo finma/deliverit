@@ -32,22 +32,25 @@ import '/pages/profile/setting/payment_method_page.dart';
 part 'route_names.dart';
 
 final router = GoRouter(
-  redirect: (context, state) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    debugPrint('user: ${auth.currentUser}');
-
-    if (auth.currentUser == null) {
-      return '/login';
-    }
-
-    return null;
-  },
   routes: [
     GoRoute(
       path: '/',
       name: Routes.home,
       builder: (context, state) => HomePage(),
+      redirect: (context, state) {
+        FirebaseAuth auth = FirebaseAuth.instance;
+
+        debugPrint('user: ${auth.currentUser}');
+
+        if (auth.currentUser == null &&
+            state.fullPath != '/register' &&
+            state.fullPath != '/otp' &&
+            state.fullPath != '/reset-password') {
+          return '/login';
+        }
+
+        return null;
+      },
       routes: [
         GoRoute(
           path: 'deliver',
@@ -157,18 +160,6 @@ final router = GoRouter(
         ),
       ],
     ),
-    // GoRoute(
-    //   path: '/home',
-    //   name: Routes.home,
-    //   builder: (context, state) => HomePage(),
-    //   routes: [
-    //     GoRoute(
-    //       path: '/profile',
-    //       name: Routes.profile,
-    //       builder: (context, state) => const ProfilePage(),
-    //     ),
-    //   ],
-    // ),
     GoRoute(
       path: '/login',
       name: Routes.login,
