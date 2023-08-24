@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
+import '/bloc/auth/auth_bloc.dart';
 import '/config/app_asset.dart';
 import '/routes/router.dart';
 import '/widgets/background_mesh_widget.dart';
@@ -14,6 +16,7 @@ class RegisterPage extends StatelessWidget {
   // controller
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -79,7 +82,7 @@ class RegisterPage extends StatelessWidget {
                               //* NAME
                               CustomTextFormField(
                                 controller: nameController,
-                                hintText: 'nama lengkap',
+                                hintText: 'Nama lengkap',
                                 iconAsset: AppAsset.iconProfile,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -93,7 +96,7 @@ class RegisterPage extends StatelessWidget {
                               //* EMAIL ADDRESS
                               CustomTextFormField(
                                 controller: emailController,
-                                hintText: 'abc@email.com',
+                                hintText: 'Alamat email',
                                 iconAsset: AppAsset.iconMail,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -109,10 +112,26 @@ class RegisterPage extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
 
+                              //* PHONE NUMBER
+                              CustomTextFormField(
+                                controller: phoneNumberController,
+                                hintText: 'Nomor telepon',
+                                iconAsset: AppAsset.iconCall,
+                                keyboardType: TextInputType.phone,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Nomor telepon tidak boleh kosong';
+                                  }
+
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+
                               //* PASSWORD
                               CustomTextFormField(
                                 controller: passwordController,
-                                hintText: 'kata sandi',
+                                hintText: 'Kata sandi',
                                 iconAsset: AppAsset.iconLock,
                                 isPassword: true,
                                 validator: (value) {
@@ -127,7 +146,7 @@ class RegisterPage extends StatelessWidget {
                               //* CONFIRM PASSWORD
                               CustomTextFormField(
                                 controller: confirmPasswordController,
-                                hintText: 'konfirmasi kata sandi',
+                                hintText: 'Konfirmasi kata sandi',
                                 iconAsset: AppAsset.iconLock,
                                 isPassword: true,
                                 validator: (value) {
@@ -147,23 +166,58 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
 
-                        ButtonCustom(
-                          label: 'SIMPAN',
-                          // icon: AppAsset.logoGoogle,
-                          onTap: () {
-                            debugPrint('${_formKey.currentState}');
-                            if (_formKey.currentState!.validate()) {
-                              final Map<String, dynamic> dataUser = {
-                                "name": nameController.text,
-                                "email": emailController.text,
-                                "password": passwordController.text,
-                                "confirmPassword":
-                                    confirmPasswordController.text,
-                              };
-
-                              debugPrint('$dataUser');
-                              context.goNamed(Routes.otp);
+                        BlocConsumer<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            if (state is AuthStateError) {
+                              Fluttertoast.showToast(
+                                msg: state.message,
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIosWeb: 2,
+                              );
                             }
+
+                            if (state is AuthStateRegister) {
+                              Fluttertoast.showToast(
+                                msg: 'Registrasi berhasil',
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIosWeb: 2,
+                              );
+
+                              context.goNamed(Routes.home);
+                            }
+                          },
+                          builder: (context, state) {
+                            final bool isLoading = state is AuthStateLoading;
+
+                            return ButtonCustom(
+                              label: 'SIMPAN',
+                              isLoading: isLoading,
+                              onTap: () {
+                                // debugPrint('${_formKey.currentState}');
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                        AuthEventRegister(
+                                          name: nameController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          phoneNumber:
+                                              phoneNumberController.text.trim(),
+                                          password:
+                                              passwordController.text.trim(),
+                                        ),
+                                      );
+                                  // final Map<String, dynamic> dataUser = {
+                                  //   "name": nameController.text,
+                                  //   "email": emailController.text,
+                                  //   "password": passwordController.text,
+                                  //   "confirmPassword":
+                                  //       confirmPasswordController.text,
+                                  // };
+
+                                  // debugPrint('$dataUser');
+                                  // context.goNamed(Routes.otp);
+                                }
+                              },
+                            );
                           },
                         ),
 
