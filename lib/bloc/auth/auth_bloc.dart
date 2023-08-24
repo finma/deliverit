@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '/config/firebase.dart';
 
@@ -23,12 +24,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthStateLoading());
 
-      await auth.signInWithEmailAndPassword(
+      final UserCredential response = await auth.signInWithEmailAndPassword(
         email: event.email,
         password: event.password,
       );
 
-      emit(AuthStateLogin());
+      if (response.user != null) {
+        final DatabaseEvent user =
+            await userRef.child(response.user!.uid).once();
+
+        if (user.snapshot.value != null) {
+          emit(AuthStateLogin());
+        } else {
+          emit(AuthStateError('User tidak ditemukan'));
+        }
+      } else {
+        emit(AuthStateError('Sign In Failed'));
+      }
+
+      // emit(AuthStateLogin());
     } on FirebaseAuthException catch (e) {
       String message = '';
 
