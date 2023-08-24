@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '/config/app_color.dart';
 
 enum ButtonType { primary, secondary }
@@ -13,6 +14,7 @@ class ButtonCustom extends StatelessWidget {
     this.type = ButtonType.primary,
     this.icon,
     this.isDisabled = false,
+    this.isLoading = false,
   }) : super(key: key);
 
   final String? label;
@@ -22,6 +24,7 @@ class ButtonCustom extends StatelessWidget {
   final String? icon;
   final bool isDisabled;
   final Widget? child;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,16 @@ class ButtonCustom extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) Image.asset(icon!),
-                    if (icon != null) const SizedBox(width: 10),
+                    if (isLoading)
+                      const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    if (icon != null || isLoading) const SizedBox(width: 10),
                     if (label != null)
                       Text(
                         label!,
