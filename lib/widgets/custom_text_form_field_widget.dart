@@ -23,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
     this.isDense = true,
     this.isDisabled = false,
     this.isPassword = false,
+    this.keyboardType = TextInputType.text,
     this.maxLines = 1,
     this.onChanged,
     this.onTap,
@@ -46,6 +47,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function()? onTap;
   final TextEditingController? controller;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class CustomTextFormField extends StatelessWidget {
             controller: controller,
             obscureText: isPassword ? isPasswordHidden : false,
             initialValue: initialValue,
+            keyboardType: keyboardType,
             validator: validator,
             maxLines: maxLines,
             onChanged: onChanged,
