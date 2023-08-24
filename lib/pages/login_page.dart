@@ -1,8 +1,10 @@
-import 'package:deliverit/config/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
+import '/bloc/auth/auth_bloc.dart';
 import '/config/app_asset.dart';
+import '/config/app_color.dart';
 import '/cubit/switch_cubit.dart';
 import '/routes/router.dart';
 import '/widgets/background_mesh_widget.dart';
@@ -125,20 +127,45 @@ class LoginPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
 
-                        ButtonCustom(
-                          label: 'MASUK',
-                          // icon: AppAsset.logoGoogle,
-                          onTap: () {
-                            // TODO: login method
-                            if (_formKey.currentState!.validate()) {
-                              // TODO: login method
-                              final Map<String, dynamic> dataUser = {
-                                "email": emailController.text,
-                                "password": passwordController.text,
-                              };
-                              debugPrint('$dataUser');
+                        BlocConsumer<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            // Go to home page when login success
+                            if (state is AuthStateLogin) {
+                              Fluttertoast.showToast(
+                                msg: 'Berhasil masuk',
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIosWeb: 3,
+                              );
+
                               context.goNamed(Routes.home);
                             }
+
+                            if (state is AuthStateError) {
+                              // debugPrint('Error: ${state.message}');
+                              Fluttertoast.showToast(
+                                msg: state.message,
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIosWeb: 3,
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            final isLoading = state is AuthStateLoading;
+
+                            return ButtonCustom(
+                              label: 'MASUK',
+                              isLoading: isLoading,
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                        AuthEventLogin(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      );
+                                }
+                              },
+                            );
                           },
                         ),
                         const SizedBox(height: 20),
@@ -202,35 +229,6 @@ class LoginPage extends StatelessWidget {
               ),
             );
           }),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(bottom: 32),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         const Text(
-          //           'Tidak punya Akun?',
-          //           style: TextStyle(
-          //             fontSize: 15,
-          //           ),
-          //         ),
-          //         TextButton(
-          //           onPressed: () {
-          //             context.goNamed(Routes.register);
-          //           },
-          //           child: const Text(
-          //             'Buat akun',
-          //             style: TextStyle(
-          //               fontSize: 15,
-          //               fontWeight: FontWeight.bold,
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

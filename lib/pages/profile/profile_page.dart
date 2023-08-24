@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
+import '/bloc/auth/auth_bloc.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/routes/router.dart';
@@ -52,82 +54,102 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          Container(
-            color: AppColor.primary,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    // * AVATAR
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthStateError) {
+            Fluttertoast.showToast(
+              msg: state.message,
+              toastLength: Toast.LENGTH_LONG,
+              timeInSecForIosWeb: 2,
+            );
+          }
+
+          if (state is AuthStateLogout) {
+            Fluttertoast.showToast(
+              msg: 'Berhasil keluar',
+              toastLength: Toast.LENGTH_LONG,
+              timeInSecForIosWeb: 2,
+            );
+            context.goNamed(Routes.login);
+          }
+        },
+        child: Stack(
+          children: [
+            Container(
+              color: AppColor.primary,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      // * AVATAR
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 1,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.asset(
+                            AppAsset.profile,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // * NAME
+                      const Text(
+                        'John Doe',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          width: 1,
                         ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.asset(
-                          AppAsset.profile,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 24,
                       ),
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    // * NAME
-                    const Text(
-                      'John Doe',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                      decoration: const BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 24,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
+                      child: ListView.builder(
+                        itemCount: menu.length,
+                        itemBuilder: (context, index) {
+                          return MenuItem(
+                            label: menu[index]['label'],
+                            icon: menu[index]['icon'],
+                            routeName: menu[index]['route'],
+                          );
+                        },
                       ),
-                    ),
-                    child: ListView.builder(
-                      itemCount: menu.length,
-                      itemBuilder: (context, index) {
-                        return MenuItem(
-                          label: menu[index]['label'],
-                          icon: menu[index]['icon'],
-                          routeName: menu[index]['route'],
-                        );
-                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -142,22 +164,17 @@ class MenuItem extends StatelessWidget {
     // required this.onTap,
   }) : super(key: key);
 
-  // final List<Map<String, dynamic>> menu;
-
   final String label;
   final String icon;
   final String routeName;
-  // final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         if (routeName == Routes.login) {
-          // TODO: create method logout
-          context.goNamed(routeName);
+          context.read<AuthBloc>().add(AuthEventLogout());
         } else {
-          // TODO: will implement later
           context.goNamed(routeName);
         }
       },

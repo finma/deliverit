@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '/model/address.dart';
@@ -30,6 +32,17 @@ import '/pages/profile/setting/payment_method_page.dart';
 part 'route_names.dart';
 
 final router = GoRouter(
+  redirect: (context, state) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    debugPrint('user: ${auth.currentUser}');
+
+    if (auth.currentUser == null) {
+      return '/login';
+    }
+
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
