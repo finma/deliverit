@@ -274,16 +274,19 @@ class DeliveryDetailPage extends StatelessWidget {
                               builder: (context, state) {
                                 DeliverCubit deliverCubit =
                                     context.read<DeliverCubit>();
-                                double totalPrice = 0;
-                                double distance = deliverCubit.state.distance;
+                                double totalPayment = 0;
+                                double distance = AppFormat.countDistance(
+                                    deliverCubit
+                                        .state.directionDetails!.distanceValue!
+                                        .toDouble());
 
                                 if (deliverCubit.state.vehicle != null) {
-                                  totalPrice = (deliverCubit
-                                              .state.vehicle!.price
-                                              .toDouble() *
-                                          distance) +
-                                      (deliverCubit.state.carrier.toDouble() *
-                                          50000);
+                                  totalPayment = AppFormat.countTotalPayment(
+                                    vehiclePrice:
+                                        deliverCubit.state.vehicle!.price,
+                                    distance: distance,
+                                    carrier: deliverCubit.state.carrier,
+                                  );
                                 }
 
                                 return Expanded(
@@ -301,9 +304,9 @@ class DeliveryDetailPage extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      if (myWallet < totalPrice)
+                                      if (myWallet < totalPayment)
                                         Text(
-                                          'Saldo kurang ${AppFormat.currency(totalPrice - myWallet)}',
+                                          'Saldo kurang ${AppFormat.currency(totalPayment - myWallet)}',
                                           style: const TextStyle(
                                             color: Colors.red,
                                             fontSize: 14,

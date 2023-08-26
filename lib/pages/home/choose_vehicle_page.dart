@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '/config/app_color.dart';
 import '/config/app_format.dart';
+import '/config/app_symbol.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/data/vehicle.dart';
@@ -67,7 +68,9 @@ class ChooseVehiclePage extends StatelessWidget {
       child: BlocBuilder<DeliverCubit, DeliverState>(
         builder: (context, state) {
           double totalPayment = 0;
-          double distance = state.distance;
+          String duration = state.directionDetails!.durationText!;
+          double distance = AppFormat.countDistance(
+              state.directionDetails!.distanceValue!.toDouble());
 
           if (state.vehicle != null) {
             totalPayment = AppFormat.countTotalPayment(
@@ -81,7 +84,7 @@ class ChooseVehiclePage extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Total jarak $distance km',
+                  'Total jarak $distance km ${AppSymbol.dot} $duration',
                   style: const TextStyle(color: Colors.grey),
                 ),
                 const SizedBox(height: 16),

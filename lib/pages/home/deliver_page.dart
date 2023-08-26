@@ -363,25 +363,12 @@ class _DeliverPageState extends State<DeliverPage> {
     LatLng pickUpLatLng = LatLng(initialPos!.latitude!, initialPos.longitude!);
     LatLng dropOffLatLng = LatLng(finalPos!.latitude!, finalPos.longitude!);
 
-    //* get distance beetween two points and store to state
-    double distanceInMeters = Geolocator.distanceBetween(
-      pickUpLatLng.latitude,
-      pickUpLatLng.longitude,
-      dropOffLatLng.latitude,
-      dropOffLatLng.longitude,
-    );
-
-    double distance =
-        double.parse((distanceInMeters / 1000).toStringAsFixed(2));
-
-    // debugPrint('distance: $distance km');
-    deliverCubit.setDistance(distance);
-
     //* GET DIRECTION DETAILS
     var details = await GoogleMapService.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
 
     // debugPrint('encoded points: ${details.encodedPoints}');
+    deliverCubit.setDirectionDetails(details);
 
     // * DECODE POLYLINE POINTS
     PolylinePoints polylinePoints = PolylinePoints();
