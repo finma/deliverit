@@ -1,4 +1,5 @@
 class AppAsset {
+  static const animSearching = 'assets/animations/searching.json';
   static const fotoBanner = 'assets/images/foto_banner.png';
   static const fotoBox = 'assets/images/foto_box.png';
   static const fotoPayload = 'assets/images/foto_payload.png';
