@@ -34,4 +34,8 @@ class AppFormat {
   }) {
     return (vehiclePrice * distance) + (carrier * 50000);
   }
+
+  static double countDistance(double distance) {
+    return double.parse((distance / 1000).toStringAsFixed(2));
+  }
 }
