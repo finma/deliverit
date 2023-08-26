@@ -128,6 +128,21 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(totalPayment: totalPayment));
   }
 
+  // create void to set is complete
+  void setIscomplete(bool value) {
+    emit(state.copyWith(isComplete: value));
+  }
+
+  // create void to set is searching
+  void setIsSearching(bool value) {
+    emit(state.copyWith(isSearching: value));
+  }
+
+  // create void to add payment method
+  void addPaymentMethod(String paymentMethod) {
+    emit(state.copyWith(paymentMethod: paymentMethod));
+  }
+
   // create void to clear current position
   void clearCurrentPosition() {
     emit(state.copyWith(currentPosition: null));

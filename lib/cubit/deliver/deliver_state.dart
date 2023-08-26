@@ -17,6 +17,9 @@ class DeliverState {
   final Vehicle? vehicle;
   final int carrier;
   final double totalPayment;
+  final String? paymentMethod;
+  final bool isComplete;
+  final bool isSearching;
 
   DeliverState({
     this.pickUpAddress,
@@ -28,6 +31,9 @@ class DeliverState {
     this.vehicle,
     this.carrier = 0,
     this.totalPayment = 0,
+    this.paymentMethod,
+    this.isComplete = false,
+    this.isSearching = false,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
     Set<Polyline>? polylineSet,
@@ -58,6 +64,9 @@ class DeliverState {
     Vehicle? vehicle,
     int? carrier,
     double? totalPayment,
+    String? paymentMethod,
+    bool? isComplete,
+    bool? isSearching,
   }) {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
@@ -75,6 +84,9 @@ class DeliverState {
       vehicle: vehicle ?? this.vehicle,
       carrier: carrier ?? this.carrier,
       totalPayment: totalPayment ?? this.totalPayment,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      isComplete: isComplete ?? this.isComplete,
+      isSearching: isSearching ?? this.isSearching,
     );
   }
 
@@ -96,6 +108,9 @@ class DeliverState {
       'vehicle': vehicle?.toJson(),
       'carrier': carrier,
       'totalPayment': totalPayment,
+      'paymentMethod': paymentMethod,
+      'isComplete': isComplete,
+      'isSearching': isSearching,
     };
   }
 }
