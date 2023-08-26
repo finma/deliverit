@@ -10,6 +10,7 @@ import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/select_cubit.dart';
 import '/model/payload.dart';
 import '/model/vehicle.dart';
+import '/routes/router.dart';
 import '/widgets/custom_button_widget.dart';
 
 class DeliveryDetailPage extends StatelessWidget {
@@ -44,7 +45,7 @@ class DeliveryDetailPage extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      bottomSheet: _buildBottomSheetButton(),
+      bottomSheet: _buildBottomSheetButton(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -103,7 +104,7 @@ class DeliveryDetailPage extends StatelessWidget {
     );
   }
 
-  Container _buildBottomSheetButton() {
+  Container _buildBottomSheetButton(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
@@ -145,7 +146,11 @@ class DeliveryDetailPage extends StatelessWidget {
               // label: 'Pilih Kendaraan',
               // isDisabled: state.vehicle == null,
               onTap: () {
-                // context.goNamed(Routes.deliveryDetail);
+                context.read<DeliverCubit>().setIscomplete(true);
+                context.read<DeliverCubit>().setIsSearching(true);
+                context.read<DeliverCubit>().addPaymentMethod(
+                    selectPayment.state == cash ? 'Cash' : 'Wallet');
+                context.goNamed(Routes.deliver);
                 // debugPrint('vehicle: ${state.toJson()}');
               },
               child: Row(

@@ -7,6 +7,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart' hide Marker;
 
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
@@ -121,31 +122,7 @@ class _DeliverPageState extends State<DeliverPage> {
         return Future.value(true);
       },
       child: Scaffold(
-        floatingActionButton: BlocBuilder<DeliverCubit, DeliverState>(
-          builder: (context, state) {
-            // debugPrint('BUILD FAB : ${state.toJson()}');
-            return FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.white,
-              onPressed: () {
-                if (state.isObtainDirection == true) {
-                  context.read<DeliverCubit>().clearState();
-                } else {
-                  context.pop();
-                }
-              },
-              child: state.isObtainDirection == true
-                  ? const Icon(
-                      Icons.close_rounded,
-                      color: AppColor.primary,
-                    )
-                  : const Icon(
-                      Icons.arrow_back_rounded,
-                      color: AppColor.primary,
-                    ),
-            );
-          },
-        ),
+        floatingActionButton: _buildFloatingActionButton(),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
         body: SafeArea(
           child: Stack(
@@ -187,96 +164,193 @@ class _DeliverPageState extends State<DeliverPage> {
                 },
               ),
 
+              BlocBuilder<DeliverCubit, DeliverState>(
+                builder: (context, state) {
+                  debugPrint('BUILD BOTTOM SHEET ${state.toJson()}}');
+                  return Visibility(
+                    visible: !state.isSearching,
+                    replacement: _buildSearchingDriverBottomSheet(),
+                    child: _buildSearchBottomSheet(),
+                  );
+                },
+              ),
+
               // * SEARCH BAR
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    color: AppColor.primary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Mau kirim barang kemana?',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Column(
-                        children: [
-                          BlocBuilder<DeliverCubit, DeliverState>(
-                            builder: (context, state) {
-                              //* SET PICK UP ADDRESS
-                              pickUpController.text =
-                                  state.pickUpAddress?.placeName ?? '';
-
-                              return CustomTextFormField(
-                                controller: pickUpController,
-                                iconAsset: AppAsset.iconLocation,
-                                hintText: 'Lokasi Pengambilan Barang',
-                                paddingVertical: 8,
-                                borderRadius: 100,
-                                isDisabled: true,
-                                onTap: () => context.goNamed(Routes.searchPage),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          BlocBuilder<DeliverCubit, DeliverState>(
-                            builder: (context, state) {
-                              // * SET DROP OFF ADDRESS
-                              dropOffController.text =
-                                  state.dropOffAddress?.placeName ?? '';
-
-                              return CustomTextFormField(
-                                controller: dropOffController,
-                                iconAsset: AppAsset.iconLocation,
-                                hintText: 'Lokasi Tujuan Barang',
-                                paddingVertical: 8,
-                                borderRadius: 100,
-                                isDisabled: true,
-                                onTap: () => context.goNamed(Routes.searchPage),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          BlocBuilder<DeliverCubit, DeliverState>(
-                            builder: (context, state) {
-                              if (state.isObtainDirection == true) {
-                                return ButtonCustom(
-                                  label: 'Lanjutkan',
-                                  onTap: () {
-                                    context.goNamed(Routes.locationDetail);
-                                  },
-                                  type: ButtonType.secondary,
-                                );
-                              }
-
-                              return const SizedBox();
-                            },
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              )
+              // _buildSearchBottomSheet()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Positioned _buildSearchBottomSheet() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: AppColor.primary,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Mau kirim barang kemana?',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Column(
+              children: [
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    //* SET PICK UP ADDRESS
+                    pickUpController.text =
+                        state.pickUpAddress?.placeName ?? '';
+
+                    return CustomTextFormField(
+                      controller: pickUpController,
+                      iconAsset: AppAsset.iconLocation,
+                      hintText: 'Lokasi Pengambilan Barang',
+                      paddingVertical: 8,
+                      borderRadius: 100,
+                      isDisabled: true,
+                      onTap: () => context.goNamed(Routes.searchPage),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    // * SET DROP OFF ADDRESS
+                    dropOffController.text =
+                        state.dropOffAddress?.placeName ?? '';
+
+                    return CustomTextFormField(
+                      controller: dropOffController,
+                      iconAsset: AppAsset.iconLocation,
+                      hintText: 'Lokasi Tujuan Barang',
+                      paddingVertical: 8,
+                      borderRadius: 100,
+                      isDisabled: true,
+                      onTap: () => context.goNamed(Routes.searchPage),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    return Visibility(
+                      visible: state.isObtainDirection == true,
+                      child: ButtonCustom(
+                        label: state.isComplete ? 'Ubah Data' : 'Lanjutkan',
+                        onTap: () => context.goNamed(Routes.locationDetail),
+                        type: ButtonType.secondary,
+                      ),
+                    );
+                  },
+                ),
+                BlocBuilder<DeliverCubit, DeliverState>(
+                  builder: (context, state) {
+                    return Visibility(
+                      visible:
+                          state.isComplete && state.isObtainDirection == true,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          ButtonCustom(
+                            label: 'Pesan Sekarang',
+                            onTap: () => context
+                                .read<DeliverCubit>()
+                                .setIsSearching(true),
+                            type: ButtonType.secondary,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Positioned _buildSearchingDriverBottomSheet() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: AppColor.secondary,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          children: [
+            const Text(
+              'Sedang mencari driver ...',
+              style: TextStyle(
+                color: AppColor.primary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Lottie.asset(AppAsset.animSearching, width: 250, height: 250),
+            ButtonCustom(
+              label: 'Batalkan',
+              onTap: () => context.read<DeliverCubit>().setIsSearching(false),
+              type: ButtonType.primary,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  BlocBuilder<DeliverCubit, DeliverState> _buildFloatingActionButton() {
+    return BlocBuilder<DeliverCubit, DeliverState>(
+      builder: (context, state) {
+        // debugPrint('BUILD FAB : ${state.toJson()}');
+        return FloatingActionButton(
+          mini: true,
+          backgroundColor: Colors.white,
+          onPressed: () {
+            if (state.isObtainDirection == true) {
+              context.read<DeliverCubit>().clearState();
+            } else {
+              context.pop();
+            }
+          },
+          child: state.isObtainDirection == true
+              ? const Icon(
+                  Icons.close_rounded,
+                  color: AppColor.primary,
+                )
+              : const Icon(
+                  Icons.arrow_back_rounded,
+                  color: AppColor.primary,
+                ),
+        );
+      },
     );
   }
 
