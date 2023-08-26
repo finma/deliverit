@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '/model/direction_details.dart';
 import '/model/map_address.dart';
 import '/model/payload.dart';
 import '/model/user_delivery.dart';
@@ -14,6 +15,7 @@ class DeliverCubit extends Cubit<DeliverState> {
       : super(DeliverState(
           currentPosition: null,
           pickUpAddress: null,
+          directionDetails: null,
           dropOffAddress: null,
           sender: null,
           receiver: null,
@@ -29,12 +31,19 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(currentPosition: position));
   }
 
+  // create void to set pick up address
   void setPickUpAddress(MapAddress address) {
     emit(state.copyWith(pickUpAddress: address));
   }
 
+  // create void to set drop off address
   void setDropOffAddress(MapAddress address) {
     emit(state.copyWith(dropOffAddress: address));
+  }
+
+  // create void to set direction details
+  void setDirectionDetails(DirectionDetails details) {
+    emit(state.copyWith(directionDetails: details));
   }
 
   // create void to set distance

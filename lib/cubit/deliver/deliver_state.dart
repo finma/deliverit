@@ -3,7 +3,7 @@ part of 'deliver_cubit.dart';
 class DeliverState {
   final MapAddress? pickUpAddress;
   final MapAddress? dropOffAddress;
-  final double distance;
+  final DirectionDetails? directionDetails;
   final bool? isObtainDirection;
   final bool isLocationUpdated;
   final List<LatLng> pLineCoordinates;
@@ -24,8 +24,8 @@ class DeliverState {
   DeliverState({
     this.pickUpAddress,
     this.dropOffAddress,
+    this.directionDetails,
     this.currentPosition,
-    this.distance = 0,
     this.sender,
     this.receiver,
     this.vehicle,
@@ -51,6 +51,7 @@ class DeliverState {
   DeliverState copyWith({
     MapAddress? pickUpAddress,
     MapAddress? dropOffAddress,
+    DirectionDetails? directionDetails,
     double? distance,
     bool? isLocationUpdated,
     List<LatLng>? pLineCoordinates,
@@ -71,7 +72,7 @@ class DeliverState {
     return DeliverState(
       pickUpAddress: pickUpAddress ?? this.pickUpAddress,
       dropOffAddress: dropOffAddress ?? this.dropOffAddress,
-      distance: distance ?? this.distance,
+      directionDetails: directionDetails ?? this.directionDetails,
       isLocationUpdated: isLocationUpdated ?? this.isLocationUpdated,
       pLineCoordinates: pLineCoordinates ?? this.pLineCoordinates,
       polylineSet: polylineSet ?? this.polylineSet,
@@ -95,7 +96,7 @@ class DeliverState {
     return {
       'pickUpAddress': pickUpAddress?.toJson(),
       'dropOffAddress': dropOffAddress?.toJson(),
-      'distance': distance,
+      'directionDetails': directionDetails?.toJson(),
       // 'currentPosition': currentPosition?.toJson(),
       // 'isLocationUpdated': isLocationUpdated,
       // 'pLineCoordinates': pLineCoordinates.map((e) => e.toJson()).toList(),
