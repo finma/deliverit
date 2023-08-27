@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/bloc/auth/auth_bloc.dart';
+import '/bloc/ride/ride_bloc.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/cubit/navigation_cubit.dart';
 import '/config/app_color.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => RideBloc()),
         BlocProvider(create: (_) => NavigationCubit()),
         BlocProvider(create: (_) => DeliverCubit()),
       ],
