@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '/bloc/auth/auth_bloc.dart';
+import '/bloc/ride/ride_bloc.dart';
 import '/config/app_color.dart';
 import '/config/app_symbol.dart';
 import '/config/app_format.dart';
@@ -105,6 +106,9 @@ class DeliveryDetailPage extends StatelessWidget {
   }
 
   Container _buildBottomSheetButton(BuildContext context) {
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+    AuthBloc auth = context.read<AuthBloc>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
@@ -143,13 +147,21 @@ class DeliveryDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ButtonCustom(
-              // label: 'Pilih Kendaraan',
-              // isDisabled: state.vehicle == null,
               onTap: () {
+                final String paymentMethod =
+                    selectPayment.state == cash ? 'Cash' : 'Wallet';
+
                 context.read<DeliverCubit>().setIscomplete(true);
                 context.read<DeliverCubit>().setIsSearching(true);
-                context.read<DeliverCubit>().addPaymentMethod(
-                    selectPayment.state == cash ? 'Cash' : 'Wallet');
+                context.read<DeliverCubit>().addPaymentMethod(paymentMethod);
+
+                context.read<RideBloc>().add(RideEventRequest(
+                      pickUp: deliverCubit.state.pickUpAddress!,
+                      dropOff: deliverCubit.state.dropOffAddress!,
+                      user: auth.state.user,
+                      paymentMethod: paymentMethod,
+                    ));
+
                 context.goNamed(Routes.deliver);
                 // debugPrint('vehicle: ${state.toJson()}');
               },
@@ -203,7 +215,7 @@ class DeliveryDetailPage extends StatelessWidget {
                   )
                 ],
               ),
-            ),
+            )
           ],
         ),
       ),

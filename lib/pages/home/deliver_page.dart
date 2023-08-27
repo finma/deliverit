@@ -1,20 +1,21 @@
 import 'dart:async';
 
-import 'package:deliverit/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' hide Marker;
 
+import '/bloc/auth/auth_bloc.dart';
+import '/bloc/ride/ride_bloc.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
 import '/model/map_address.dart';
 import '/routes/router.dart';
 import '/services/googlemap.dart';
+import '/widgets/custom_button_widget.dart';
 import '/widgets/custom_text_form_field_widget.dart';
 
 class DeliverPage extends StatefulWidget {
@@ -170,7 +171,7 @@ class _DeliverPageState extends State<DeliverPage> {
                   return Visibility(
                     visible: !state.isSearching,
                     replacement: _buildSearchingDriverBottomSheet(),
-                    child: _buildSearchBottomSheet(),
+                    child: _buildSearchBottomSheet(context),
                   );
                 },
               ),
@@ -184,7 +185,9 @@ class _DeliverPageState extends State<DeliverPage> {
     );
   }
 
-  Positioned _buildSearchBottomSheet() {
+  Positioned _buildSearchBottomSheet(BuildContext context) {
+    AuthBloc auth = context.read<AuthBloc>();
+
     return Positioned(
       left: 0,
       right: 0,
@@ -271,9 +274,16 @@ class _DeliverPageState extends State<DeliverPage> {
                           const SizedBox(height: 16),
                           ButtonCustom(
                             label: 'Pesan Sekarang',
-                            onTap: () => context
-                                .read<DeliverCubit>()
-                                .setIsSearching(true),
+                            onTap: () {
+                              context.read<DeliverCubit>().setIsSearching(true);
+
+                              context.read<RideBloc>().add(RideEventRequest(
+                                    pickUp: state.pickUpAddress!,
+                                    dropOff: state.dropOffAddress!,
+                                    user: auth.state.user,
+                                    paymentMethod: state.paymentMethod!,
+                                  ));
+                            },
                             type: ButtonType.secondary,
                           ),
                         ],
@@ -317,7 +327,10 @@ class _DeliverPageState extends State<DeliverPage> {
             Lottie.asset(AppAsset.animSearching, width: 250, height: 250),
             ButtonCustom(
               label: 'Batalkan',
-              onTap: () => context.read<DeliverCubit>().setIsSearching(false),
+              onTap: () {
+                context.read<DeliverCubit>().setIsSearching(false);
+                context.read<RideBloc>().add(RideEventCancel());
+              },
               type: ButtonType.primary,
             )
           ],
