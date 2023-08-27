@@ -64,7 +64,7 @@ class ProfilePage extends StatelessWidget {
             );
           }
 
-          if (state is AuthStateLogout) {
+          if (state is AuthStateUnauthenticated) {
             Fluttertoast.showToast(
               msg: 'Berhasil keluar',
               toastLength: Toast.LENGTH_LONG,

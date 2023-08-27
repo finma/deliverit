@@ -176,7 +176,7 @@ class RegisterPage extends StatelessWidget {
                               );
                             }
 
-                            if (state is AuthStateRegister) {
+                            if (state is AuthStateAuthenticated) {
                               Fluttertoast.showToast(
                                 msg: 'Registrasi berhasil',
                                 toastLength: Toast.LENGTH_LONG,

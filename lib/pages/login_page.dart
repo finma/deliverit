@@ -130,7 +130,7 @@ class LoginPage extends StatelessWidget {
                         BlocConsumer<AuthBloc, AuthState>(
                           listener: (context, state) {
                             // Go to home page when login success
-                            if (state is AuthStateLogin) {
+                            if (state is AuthStateAuthenticated) {
                               Fluttertoast.showToast(
                                 msg: 'Berhasil masuk',
                                 toastLength: Toast.LENGTH_LONG,
