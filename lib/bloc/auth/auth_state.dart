@@ -1,12 +1,15 @@
 part of 'auth_bloc.dart';
 
-abstract class AuthState {}
+abstract class AuthState {
+  get user => null;
+}
 
 class AuthStateUnauthenticated extends AuthState {}
 
 class AuthStateAuthenticated extends AuthState {
   AuthStateAuthenticated({required this.user});
 
+  @override
   final User user;
 }
 
