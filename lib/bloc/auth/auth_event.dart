@@ -12,6 +12,12 @@ class AuthEventLogin extends AuthEvent {
   final String password;
 }
 
+class AuthEventSaveCurrentUser extends AuthEvent {
+  AuthEventSaveCurrentUser({required this.userId});
+
+  final String userId;
+}
+
 class AuthEventRegister extends AuthEvent {
   AuthEventRegister({
     required this.name,

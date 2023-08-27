@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:firebase_database/firebase_database.dart';
 
 import '/config/firebase.dart';
+import '/model/user.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,10 +13,12 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  AuthBloc() : super(AuthStateLogout()) {
+  AuthBloc() : super(AuthStateUnauthenticated()) {
     on<AuthEventLogin>(_authEventLogin);
 
     on<AuthEventRegister>(_authEventRegister);
+
+    on<AuthEventSaveCurrentUser>(_authEventSaveCurrentUser);
 
     on<AuthEventLogout>(_authEventLogout);
   }
@@ -33,8 +36,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final DatabaseEvent user =
             await userRef.child(response.user!.uid).once();
 
+        // print('user: ${user.snapshot.key}');
+
         if (user.snapshot.value != null) {
-          emit(AuthStateLogin());
+          emit(AuthStateAuthenticated(user: User.fromSnapshot(user.snapshot)));
         } else {
           emit(AuthStateError('User tidak ditemukan'));
         }
@@ -60,6 +65,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  void _authEventSaveCurrentUser(
+      AuthEventSaveCurrentUser event, Emitter<AuthState> emit) async {
+    final DatabaseEvent user = await userRef.child(event.userId).once();
+
+    // print('save user: ${user.snapshot.value}');
+
+    emit(AuthStateAuthenticated(user: User.fromSnapshot(user.snapshot)));
+  }
+
   void _authEventRegister(
       AuthEventRegister event, Emitter<AuthState> emit) async {
     try {
@@ -80,11 +94,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         };
 
         await userRef.child(response.user!.uid).set(userData);
+
+        final DatabaseEvent user =
+            await userRef.child(response.user!.uid).once();
+
+        emit(AuthStateAuthenticated(user: User.fromSnapshot(user.snapshot)));
       } else {
         emit(AuthStateError('Sign Up Failed'));
       }
-
-      emit(AuthStateRegister());
     } on FirebaseAuthException catch (e) {
       String message = '';
 
@@ -108,7 +125,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await auth.signOut();
 
-      emit(AuthStateLogout());
+      emit(AuthStateUnauthenticated());
     } on FirebaseAuthException catch (e) {
       emit(AuthStateError(e.message.toString()));
     } catch (e) {
