@@ -1,3 +1,4 @@
+import 'package:deliverit/bloc/auth/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -37,17 +38,18 @@ final router = GoRouter(
       path: '/',
       name: Routes.home,
       builder: (context, state) => HomePage(),
-      redirect: (context, state) {
+      redirect: (context, state) async {
         FirebaseAuth auth = FirebaseAuth.instance;
 
         debugPrint('user: ${auth.currentUser}');
 
-        if (auth.currentUser == null &&
-            state.fullPath != '/register' &&
-            state.fullPath != '/otp' &&
-            state.fullPath != '/reset-password') {
+        if (auth.currentUser == null) {
           return '/login';
         }
+
+        context
+            .read<AuthBloc>()
+            .add(AuthEventSaveCurrentUser(userId: auth.currentUser!.uid));
 
         return null;
       },
