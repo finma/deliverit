@@ -76,6 +76,13 @@ class DeliverCubit extends Cubit<DeliverState> {
     emit(state.copyWith(markerSet: newMarkerSet));
   }
 
+  // create void to add new marker to set marker
+  void addMarkerSet(Set<Marker> marker) {
+    // final Set<Marker> newMarkerSet = {...state.markerSet};
+    // newMarkerSet.add(marker);
+    emit(state.copyWith(markerSet: marker));
+  }
+
   // create void to add new circle to set circle
   void addCircle(Circle circle) {
     final Set<Circle> newCircleSet = {...state.circleSet};
@@ -184,7 +191,7 @@ class DeliverCubit extends Cubit<DeliverState> {
 
   // create void to clear marker set
   void clearMarkerSet() {
-    emit(state.copyWith(markerSet: {}));
+    emit(state.copyWith(markerSet: <Marker>{}));
   }
 
   // create void to clear circle set
