@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -8,11 +9,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' hide Marker;
 
 import '/bloc/auth/auth_bloc.dart';
+import '/bloc/nearby/nearby_bloc.dart';
 import '/bloc/ride/ride_bloc.dart';
 import '/config/app_asset.dart';
 import '/config/app_color.dart';
 import '/cubit/deliver/deliver_cubit.dart';
+import '/cubit/select_cubit.dart';
 import '/model/map_address.dart';
+import '/model/nearby_available_drivers.dart';
 import '/routes/router.dart';
 import '/services/googlemap.dart';
 import '/widgets/custom_button_widget.dart';
@@ -43,6 +47,10 @@ class _DeliverPageState extends State<DeliverPage> {
     target: LatLng(-7.319563, 108.202972),
     zoom: 14.4746,
   );
+
+  SelectCubit<bool> nearbyAvailableDriverKeysLoaded = SelectCubit(false);
+
+  late BitmapDescriptor nearbyIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +116,10 @@ class _DeliverPageState extends State<DeliverPage> {
         // * ADD CURRENT ADDRESS AND POSITION TO CUBIT
         deliverCubit.setPickUpAddress(address);
         deliverCubit.addCurrentPosition(position);
+
+        createIconMarker();
+
+        initGeoFireListener();
       }
     }
 
@@ -482,5 +494,97 @@ class _DeliverPageState extends State<DeliverPage> {
 
     deliverCubit.addCircle(pickUpCircle);
     deliverCubit.addCircle(dropOffCircle);
+  }
+
+  void initGeoFireListener() {
+    Geofire.initialize('availableDrivers');
+
+    Geofire.queryAtLocation(
+            currentLocation!.latitude, currentLocation!.longitude, 30)
+        ?.listen((map) {
+      // print('map: $map');
+      if (map != null) {
+        var callBack = map['callBack'];
+
+        //latitude will be retrieved from map['latitude']
+        //longitude will be retrieved from map['longitude']
+
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            NearbyAvailableDrivers nearbyAvailableDrivers =
+                NearbyAvailableDrivers(
+              key: map['key'],
+              latitude: map['latitude'],
+              longitude: map['longitude'],
+            );
+
+            context
+                .read<NearbyBloc>()
+                .add(NearbyEventAdd(driver: nearbyAvailableDrivers));
+
+            if (nearbyAvailableDriverKeysLoaded.state == true) {
+              updateAvailableDriversOnMap();
+            }
+            break;
+
+          case Geofire.onKeyExited:
+            context.read<NearbyBloc>().add(NearbyEventRemove(key: map['key']));
+            updateAvailableDriversOnMap();
+            break;
+
+          case Geofire.onKeyMoved:
+            NearbyAvailableDrivers nearbyAvailableDrivers =
+                NearbyAvailableDrivers(
+              key: map['key'],
+              latitude: map['latitude'],
+              longitude: map['longitude'],
+            );
+
+            context
+                .read<NearbyBloc>()
+                .add(NearbyEventUpdate(driver: nearbyAvailableDrivers));
+            updateAvailableDriversOnMap();
+            break;
+
+          case Geofire.onGeoQueryReady:
+            updateAvailableDriversOnMap();
+            break;
+        }
+      }
+
+      setState(() {});
+    });
+  }
+
+  void updateAvailableDriversOnMap() {
+    NearbyBloc nearbyBloc = context.read<NearbyBloc>();
+    DeliverCubit deliverCubit = context.read<DeliverCubit>();
+
+    deliverCubit.clearMarkerSet();
+
+    Set<Marker> tMarkers = <Marker>{};
+
+    for (NearbyAvailableDrivers driver in nearbyBloc.state.drivers) {
+      LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
+
+      Marker marker = Marker(
+        markerId: MarkerId('driver${driver.key}'),
+        position: driverPosition,
+        icon: nearbyIcon,
+      );
+
+      tMarkers.add(marker);
+    }
+
+    deliverCubit.addMarkerSet(tMarkers);
+  }
+
+  void createIconMarker() {
+    ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context, size: const Size(2, 2));
+    BitmapDescriptor.fromAssetImage(imageConfiguration, AppAsset.iconPickup)
+        .then((value) {
+      nearbyIcon = value;
+    });
   }
 }
