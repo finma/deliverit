@@ -33,13 +33,17 @@ class RideBloc extends Bloc<RideEvent, RideState> {
     Map rideInfo = {
       'driverId': 'waiting',
       'paymentMethod': event.paymentMethod,
-      'pickUp': pickUpMap,
-      'dropOff': dropOffMap,
-      'createdAt': DateTime.now().toString(),
       'riderName': event.user.name,
       'riderPhone': event.user.phoneNumber,
+      'pickup': pickUpMap,
       'pickupAddress': event.pickUp.placeName,
+      'pickupFullAddress': event.pickUp.placeFormattedAddress,
+      'pickupNote': event.pickupNote,
+      'dropoff': dropOffMap,
       'dropoffAddress': event.dropOff.placeName,
+      'dropoffFullAddress': event.dropOff.placeFormattedAddress,
+      'dropoffNote': event.dropoffNote,
+      'createdAt': DateTime.now().toString(),
     };
 
     rideRequestRef.set(rideInfo);

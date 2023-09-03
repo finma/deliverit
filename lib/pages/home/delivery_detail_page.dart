@@ -160,6 +160,8 @@ class DeliveryDetailPage extends StatelessWidget {
                       dropOff: deliverCubit.state.dropOffAddress!,
                       user: auth.state.user,
                       paymentMethod: paymentMethod,
+                      pickupNote: deliverCubit.state.sender!.note,
+                      dropoffNote: deliverCubit.state.receiver!.note,
                     ));
 
                 context.goNamed(Routes.deliver);
