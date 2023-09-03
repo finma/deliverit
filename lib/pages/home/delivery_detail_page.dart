@@ -107,7 +107,6 @@ class DeliveryDetailPage extends StatelessWidget {
 
   Container _buildBottomSheetButton(BuildContext context) {
     DeliverCubit deliverCubit = context.read<DeliverCubit>();
-    AuthBloc auth = context.read<AuthBloc>();
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -158,10 +157,9 @@ class DeliveryDetailPage extends StatelessWidget {
                 context.read<RideBloc>().add(RideEventRequest(
                       pickUp: deliverCubit.state.pickUpAddress!,
                       dropOff: deliverCubit.state.dropOffAddress!,
-                      user: auth.state.user,
                       paymentMethod: paymentMethod,
-                      pickupNote: deliverCubit.state.sender!.note,
-                      dropoffNote: deliverCubit.state.receiver!.note,
+                      sender: deliverCubit.state.sender!,
+                      receiver: deliverCubit.state.receiver!,
                     ));
 
                 context.goNamed(Routes.deliver);

@@ -6,18 +6,16 @@ class RideEventRequest extends RideEvent {
   RideEventRequest({
     required this.pickUp,
     required this.dropOff,
-    required this.user,
     required this.paymentMethod,
-    this.pickupNote,
-    this.dropoffNote,
+    required this.sender,
+    required this.receiver,
   });
 
   final MapAddress pickUp;
   final MapAddress dropOff;
-  final User user;
   final String paymentMethod;
-  final String? pickupNote;
-  final String? dropoffNote;
+  final UserDelivery sender;
+  final UserDelivery receiver;
 }
 
 class RideEventCancel extends RideEvent {}

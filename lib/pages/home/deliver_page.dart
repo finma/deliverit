@@ -198,8 +198,6 @@ class _DeliverPageState extends State<DeliverPage> {
   }
 
   Positioned _buildSearchBottomSheet(BuildContext context) {
-    AuthBloc auth = context.read<AuthBloc>();
-
     return Positioned(
       left: 0,
       right: 0,
@@ -292,8 +290,9 @@ class _DeliverPageState extends State<DeliverPage> {
                               context.read<RideBloc>().add(RideEventRequest(
                                     pickUp: state.pickUpAddress!,
                                     dropOff: state.dropOffAddress!,
-                                    user: auth.state.user,
                                     paymentMethod: state.paymentMethod!,
+                                    sender: state.sender!,
+                                    receiver: state.receiver!,
                                   ));
                             },
                             type: ButtonType.secondary,
