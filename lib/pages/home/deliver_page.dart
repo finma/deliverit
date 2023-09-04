@@ -293,6 +293,13 @@ class _DeliverPageState extends State<DeliverPage> {
                                     paymentMethod: state.paymentMethod!,
                                     sender: state.sender!,
                                     receiver: state.receiver!,
+                                    distance: state
+                                        .directionDetails!.distanceValue!
+                                        .toDouble(),
+                                    totalPayment: state.totalPayment,
+                                    payloads: state.payloads,
+                                    vehicle: state.vehicle!,
+                                    carrier: state.carrier,
                                   ));
                             },
                             type: ButtonType.secondary,

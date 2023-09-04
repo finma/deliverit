@@ -2,7 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '/model/map_address.dart';
+import '/model/payload.dart';
 import '/model/user_delivery.dart';
+import '/model/vehicle.dart';
 
 part 'ride_event.dart';
 part 'ride_state.dart';
@@ -20,32 +22,19 @@ class RideBloc extends Bloc<RideEvent, RideState> {
     rideRequestRef =
         FirebaseDatabase.instance.ref().child('rideRequests').push();
 
-    Map pickUpMap = {
-      'latitude': event.pickUp.latitude.toString(),
-      'longitude': event.pickUp.longitude.toString(),
-    };
-
-    Map dropOffMap = {
-      'latitude': event.dropOff.latitude.toString(),
-      'longitude': event.dropOff.longitude.toString(),
-    };
-
     Map rideInfo = {
-      'driverId': 'waiting',
-      'paymentMethod': event.paymentMethod,
-      'senderName': event.sender.name,
-      'senderPhone': event.sender.phoneNumber,
-      'senderNote': event.sender.note,
-      'receiverName': event.receiver.name,
-      'receiverPhone': event.receiver.phoneNumber,
-      'receiverNote': event.receiver.note,
-      'pickup': pickUpMap,
-      'pickupAddress': event.pickUp.placeName,
-      'pickupFullAddress': event.pickUp.placeFormattedAddress,
-      'dropoff': dropOffMap,
-      'dropoffAddress': event.dropOff.placeName,
-      'dropoffFullAddress': event.dropOff.placeFormattedAddress,
       'createdAt': DateTime.now().toString(),
+      'driverId': 'waiting',
+      'totalPayment': event.totalPayment,
+      'paymentMethod': event.paymentMethod,
+      'pickup': event.pickUp.toJson(),
+      'dropoff': event.dropOff.toJson(),
+      'distance': event.distance,
+      'sender': event.sender.toJson(),
+      'receiver': event.receiver.toJson(),
+      'payloads': event.payloads.map((e) => e.toJson()).toList(),
+      'vehicle': event.vehicle,
+      'carrier': event.carrier,
     };
 
     rideRequestRef.set(rideInfo);

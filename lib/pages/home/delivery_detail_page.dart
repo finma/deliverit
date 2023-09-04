@@ -160,6 +160,13 @@ class DeliveryDetailPage extends StatelessWidget {
                       paymentMethod: paymentMethod,
                       sender: deliverCubit.state.sender!,
                       receiver: deliverCubit.state.receiver!,
+                      distance: deliverCubit
+                          .state.directionDetails!.distanceValue!
+                          .toDouble(),
+                      totalPayment: deliverCubit.state.totalPayment,
+                      payloads: deliverCubit.state.payloads,
+                      vehicle: deliverCubit.state.vehicle!,
+                      carrier: deliverCubit.state.carrier,
                     ));
 
                 context.goNamed(Routes.deliver);

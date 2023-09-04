@@ -9,6 +9,11 @@ class RideEventRequest extends RideEvent {
     required this.paymentMethod,
     required this.sender,
     required this.receiver,
+    required this.distance,
+    required this.totalPayment,
+    required this.payloads,
+    required this.vehicle,
+    required this.carrier,
   });
 
   final MapAddress pickUp;
@@ -16,6 +21,11 @@ class RideEventRequest extends RideEvent {
   final String paymentMethod;
   final UserDelivery sender;
   final UserDelivery receiver;
+  final double distance;
+  final double totalPayment;
+  final List<Payload> payloads;
+  final Vehicle vehicle;
+  final int carrier;
 }
 
 class RideEventCancel extends RideEvent {}
