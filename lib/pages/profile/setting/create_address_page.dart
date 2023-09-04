@@ -166,13 +166,13 @@ class CreateAddressPage extends StatelessWidget {
               onTap: () {
                 // TODO: Pilih Lokasi
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: const [
+                      children: [
                         ImageIcon(
                           AssetImage(AppAsset.iconLocation),
                           color: AppColor.primary,
@@ -185,7 +185,7 @@ class CreateAddressPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Icon(
+                    Icon(
                       Icons.arrow_forward_ios_outlined,
                       size: 16,
                     )

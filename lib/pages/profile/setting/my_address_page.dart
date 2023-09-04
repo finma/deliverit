@@ -72,8 +72,8 @@ class MyAddressPage extends StatelessWidget {
                       color: AppColor.primary,
                     ),
                   ),
-                  child: Row(
-                    children: const [
+                  child: const Row(
+                    children: [
                       Icon(
                         Icons.add_circle_outline,
                         color: AppColor.primary,

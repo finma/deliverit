@@ -18,10 +18,10 @@ class SettingPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 28),
         child: Column(
-          children: const [
+          children: [
             ItemSetting(
               title: 'Alamat saya',
               route: Routes.myAddress,

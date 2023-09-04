@@ -75,9 +75,9 @@ class BottomAppBarWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         height: 60,
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const <Widget>[
+          children: <Widget>[
             // * LEFT TAB BAR ICONS
             NavigationButton(
               iconAsset: AppAsset.iconBag,

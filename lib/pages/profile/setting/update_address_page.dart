@@ -9,7 +9,7 @@ import '/widgets/custom_radio_button_widget.dart';
 import '/widgets/custom_text_form_field_widget.dart';
 
 class UpdateAddressPage extends StatefulWidget {
-  UpdateAddressPage({super.key, required this.address});
+  const UpdateAddressPage({super.key, required this.address});
 
   final Address address;
 
@@ -192,13 +192,13 @@ class _UpdateAddressPageState extends State<UpdateAddressPage> {
               onTap: () {
                 // TODO: Pilih Lokasi
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: const [
+                      children: [
                         ImageIcon(
                           AssetImage(AppAsset.iconLocation),
                           color: AppColor.primary,
@@ -211,7 +211,7 @@ class _UpdateAddressPageState extends State<UpdateAddressPage> {
                         ),
                       ],
                     ),
-                    const Icon(
+                    Icon(
                       Icons.arrow_forward_ios_outlined,
                       size: 16,
                     )
