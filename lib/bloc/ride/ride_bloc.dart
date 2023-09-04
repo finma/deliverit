@@ -33,7 +33,7 @@ class RideBloc extends Bloc<RideEvent, RideState> {
       'sender': event.sender.toJson(),
       'receiver': event.receiver.toJson(),
       'payloads': event.payloads.map((e) => e.toJson()).toList(),
-      'vehicle': event.vehicle,
+      'vehicle': event.vehicle.toJson(),
       'carrier': event.carrier,
     };
 
