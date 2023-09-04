@@ -20,14 +20,14 @@ class Payload {
   factory Payload.fromJson(Map<String, dynamic> json) => Payload(
         id: json["id"],
         name: json["name"],
-        size: json["size"],
+        size: stringToSize(json["size"]),
         qty: json["qty"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "size": size,
+        "size": sizeToString(size),
         "qty": qty,
       };
 
