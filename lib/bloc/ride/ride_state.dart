@@ -12,4 +12,8 @@ class RideStateCancel extends RideState {}
 
 class RideStateSuccess extends RideState {}
 
-class RideStateError extends RideState {}
+class RideStateError extends RideState {
+  RideStateError(this.message);
+
+  final String message;
+}

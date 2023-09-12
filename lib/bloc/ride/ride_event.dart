@@ -14,6 +14,7 @@ class RideEventRequest extends RideEvent {
     required this.payloads,
     required this.vehicle,
     required this.carrier,
+    this.driver,
   });
 
   final MapAddress pickUp;
@@ -26,6 +27,15 @@ class RideEventRequest extends RideEvent {
   final List<Payload> payloads;
   final Vehicle vehicle;
   final int carrier;
+  final NearbyAvailableDrivers? driver;
 }
 
 class RideEventCancel extends RideEvent {}
+
+class RideEventSuccess extends RideEvent {}
+
+class RideEventError extends RideEvent {
+  RideEventError(this.message);
+
+  final String message;
+}
