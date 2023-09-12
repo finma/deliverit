@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -49,8 +50,11 @@ class _DeliverPageState extends State<DeliverPage> {
   );
 
   SelectCubit<bool> nearbyAvailableDriverKeysLoaded = SelectCubit(false);
+  SelectCubit<bool> isRequestSuccess = SelectCubit(false);
 
   late BitmapDescriptor nearbyIcon;
+
+  List<NearbyAvailableDrivers> availableDrivers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +183,7 @@ class _DeliverPageState extends State<DeliverPage> {
 
               BlocBuilder<DeliverCubit, DeliverState>(
                 builder: (context, state) {
-                  debugPrint('BUILD BOTTOM SHEET ${state.toJson()}}');
+                  // debugPrint('BUILD BOTTOM SHEET ${state.toJson()}}');
                   return Visibility(
                     visible: !state.isSearching,
                     replacement: _buildSearchingDriverBottomSheet(),
@@ -282,27 +286,44 @@ class _DeliverPageState extends State<DeliverPage> {
                       child: Column(
                         children: [
                           const SizedBox(height: 16),
-                          ButtonCustom(
-                            label: 'Pesan Sekarang',
-                            onTap: () {
-                              context.read<DeliverCubit>().setIsSearching(true);
+                          BlocBuilder<RideBloc, RideState>(
+                            builder: (context, rideState) {
+                              return ButtonCustom(
+                                label: 'Pesan Sekarang',
+                                onTap: () {
+                                  final drivers =
+                                      context.read<NearbyBloc>().state.drivers;
+                                  context
+                                      .read<DeliverCubit>()
+                                      .setIsSearching(true);
 
-                              context.read<RideBloc>().add(RideEventRequest(
-                                    pickUp: state.pickUpAddress!,
-                                    dropOff: state.dropOffAddress!,
-                                    paymentMethod: state.paymentMethod!,
-                                    sender: state.sender!,
-                                    receiver: state.receiver!,
-                                    distance: state
-                                        .directionDetails!.distanceValue!
-                                        .toDouble(),
-                                    totalPayment: state.totalPayment,
-                                    payloads: state.payloads,
-                                    vehicle: state.vehicle!,
-                                    carrier: state.carrier,
-                                  ));
+                                  context.read<RideBloc>().add(RideEventRequest(
+                                        pickUp: state.pickUpAddress!,
+                                        dropOff: state.dropOffAddress!,
+                                        paymentMethod: state.paymentMethod!,
+                                        sender: state.sender!,
+                                        receiver: state.receiver!,
+                                        distance: state
+                                            .directionDetails!.distanceValue!
+                                            .toDouble(),
+                                        totalPayment: state.totalPayment,
+                                        payloads: state.payloads,
+                                        vehicle: state.vehicle!,
+                                        carrier: state.carrier,
+                                        driver: drivers.isNotEmpty
+                                            ? drivers[0]
+                                            : null,
+                                      ));
+
+                                  availableDrivers = context
+                                      .read<NearbyBloc>()
+                                      .state
+                                      .drivers
+                                      .toList();
+                                },
+                                type: ButtonType.secondary,
+                              );
                             },
-                            type: ButtonType.secondary,
                           ),
                         ],
                       ),
@@ -332,26 +353,52 @@ class _DeliverPageState extends State<DeliverPage> {
             topRight: Radius.circular(24),
           ),
         ),
-        child: Column(
-          children: [
-            const Text(
-              'Sedang mencari driver ...',
-              style: TextStyle(
-                color: AppColor.primary,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Lottie.asset(AppAsset.animSearching, width: 250, height: 250),
-            ButtonCustom(
-              label: 'Batalkan',
-              onTap: () {
-                context.read<DeliverCubit>().setIsSearching(false);
-                context.read<RideBloc>().add(RideEventCancel());
-              },
-              type: ButtonType.primary,
-            )
-          ],
+        child: BlocConsumer<RideBloc, RideState>(
+          listener: (context, state) {
+            if (state is RideStateError) {
+              Fluttertoast.showToast(
+                msg: state.message,
+                timeInSecForIosWeb: 2,
+              );
+
+              context.read<DeliverCubit>().setIsSearching(false);
+              context.read<RideBloc>().add(RideEventCancel());
+            }
+
+            if (state is RideStateSuccess && !isRequestSuccess.state) {
+              Fluttertoast.showToast(
+                msg: 'Berhasil memesan driver',
+                timeInSecForIosWeb: 2,
+              );
+
+              context.read<DeliverCubit>().setIsSearching(false);
+
+              isRequestSuccess.setSelectedValue(true);
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                const Text(
+                  'Sedang mencari driver ...',
+                  style: TextStyle(
+                    color: AppColor.primary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Lottie.asset(AppAsset.animSearching, width: 250, height: 250),
+                ButtonCustom(
+                  label: 'Batalkan',
+                  onTap: () {
+                    context.read<DeliverCubit>().setIsSearching(false);
+                    context.read<RideBloc>().add(RideEventCancel());
+                  },
+                  type: ButtonType.primary,
+                )
+              ],
+            );
+          },
         ),
       ),
     );

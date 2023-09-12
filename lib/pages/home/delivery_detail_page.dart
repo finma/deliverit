@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '/bloc/auth/auth_bloc.dart';
+import '/bloc/nearby/nearby_bloc.dart';
 import '/bloc/ride/ride_bloc.dart';
 import '/config/app_color.dart';
 import '/config/app_symbol.dart';
@@ -150,6 +151,8 @@ class DeliveryDetailPage extends StatelessWidget {
                 final String paymentMethod =
                     selectPayment.state == cash ? 'Cash' : 'Wallet';
 
+                final drivers = context.read<NearbyBloc>().state.drivers;
+
                 context.read<DeliverCubit>().setIscomplete(true);
                 context.read<DeliverCubit>().setIsSearching(true);
                 context.read<DeliverCubit>().addPaymentMethod(paymentMethod);
@@ -167,6 +170,7 @@ class DeliveryDetailPage extends StatelessWidget {
                       payloads: deliverCubit.state.payloads,
                       vehicle: deliverCubit.state.vehicle!,
                       carrier: deliverCubit.state.carrier,
+                      driver: drivers.isNotEmpty ? drivers[0] : null,
                     ));
 
                 context.goNamed(Routes.deliver);
